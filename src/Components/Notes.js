@@ -10,7 +10,7 @@ function Notes() {
             <h2>Your Notes</h2>
             {notes.map((note, ind) => {
                 return (
-                    <Noteitem note={note} />
+                    <Noteitem key={ind} note={note} />
                 )
             })}
         </div>
