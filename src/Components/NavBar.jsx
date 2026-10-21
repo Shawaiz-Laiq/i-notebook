@@ -1,17 +1,22 @@
-import {
-    Link
-} from "react-router-dom"
+import {Link, useLocation} from "react-router-dom"
+import { useEffect } from "react";
 
 
 function NavBar() {
+    let location = useLocation();
+    useEffect(() => {
+      console.log(location.pathname)
+    
+    }, [location])
+    
     return (
     <>
         <ul className="nav nav-tabs">
             <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/">Home</Link>
+                <Link className={`nav-link ${location.pathname === "/" ? "active" : "" } `} aria-current="page" to="/">Home</Link>
             </li>
             <li className="nav-item">
-                <Link className="nav-link" to="/about">About</Link>
+                <Link className={`nav-link ${location.pathname === "/about" ? "active" : "" } `} to="/about">About</Link>
             </li>
             {/* <li className="nav-item">
                 <a className="nav-link" href="#">Link</a>
