@@ -4,7 +4,8 @@ import NoteContext from "./noteContext";
 import { useRef } from "react";
 
 const NoteState = (props) => {
-  const host = "http://localhost:5000"
+  const token = localStorage.getItem("token");
+  const host = "http://localhost:5000";
   const notesInitial = []
 
 //fetch 
@@ -13,7 +14,7 @@ const getNote = async () => {
       method: 'GET',
       headers: {
         "Content-Type": "application/json",
-        "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNmFkNjI4MWY1NDg0NjZhNjI3OGIzNDM4In0sImlhdCI6MTc5MjQxOTg3MX0.tzZlft0jgbQWjvHspgMdJdKzBmVuLLUMSgDUjHTKgyQ"
+        "auth-token": token
       },
     
     });
@@ -33,7 +34,7 @@ const getNote = async () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNmFkNjI4MWY1NDg0NjZhNjI3OGIzNDM4In0sImlhdCI6MTc5MjQxOTg3MX0.tzZlft0jgbQWjvHspgMdJdKzBmVuLLUMSgDUjHTKgyQ'
+        'auth-token': token
       },
       body: JSON.stringify({title: title,
             description: description})
@@ -59,7 +60,7 @@ console.log( response.status);
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNmFkNjI4MWY1NDg0NjZhNjI3OGIzNDM4In0sImlhdCI6MTc5MjQxOTg3MX0.tzZlft0jgbQWjvHspgMdJdKzBmVuLLUMSgDUjHTKgyQ'
+        'auth-token': token
       },
     });
     const json = await response.json()
@@ -74,7 +75,7 @@ console.log( response.status);
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNmFkNjI4MWY1NDg0NjZhNjI3OGIzNDM4In0sImlhdCI6MTc5MjQxOTg3MX0.tzZlft0jgbQWjvHspgMdJdKzBmVuLLUMSgDUjHTKgyQ'
+        'auth-token': token
       },
       body: JSON.stringify({title, description})
     });

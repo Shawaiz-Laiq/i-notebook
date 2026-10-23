@@ -21,6 +21,7 @@ function Notes() {
         if (title.length >= 10 && description.length >= 10) {
             edit(note.etitle, note.edescription)
             showAlert("Success", "Note added successfully");
+           
         } else {
             if (title.length < 10 && description.length < 10) {
                  showAlert("Warning", "Title and Description is too short");
@@ -38,6 +39,7 @@ function Notes() {
         console.log("update" , note)
         edit(note.id, note.etitle, note.edescription)
         refclose.current.click()
+    
     }
 
     const titleclick = (e) => {
