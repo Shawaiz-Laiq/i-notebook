@@ -9,13 +9,16 @@ import {
 } from "react-router-dom"
 import NoteState from './Context/NoteState';
 import Alert from './Components/Alert';
+import { useRef , useState } from 'react';
 
 function App() {
+  
+
   return (
     <NoteState>
       <Router>
         <NavBar />
-        <Alert msg="This is the Msg" />
+       <Alert />
         <div className="container">
           <Routes>
             <Route path="/about" element={<About />} />
