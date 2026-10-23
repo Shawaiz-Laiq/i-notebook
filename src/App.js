@@ -2,6 +2,7 @@ import './App.css';
 import NavBar from './Components/NavBar'
 import Home from './Components/Home'
 import About from './Components/About'
+import Login from './Components/login'
 import {
   BrowserRouter as Router,
   Routes,
@@ -23,6 +24,7 @@ function App() {
           <Routes>
             <Route path="/about" element={<About />} />
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </div>
       </Router>

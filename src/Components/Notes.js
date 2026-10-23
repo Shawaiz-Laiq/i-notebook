@@ -81,8 +81,9 @@ function Notes() {
                 </div>
             </dialog>
 
-            <div className="row">
+            <div className=" row">
                 <h2>Your Notes</h2>
+                {notes.length ===0 &&  <div className=" container"> There is no Notes to display </div>}
                 {notes.map((note, ind) => {
                     return (
                         <Noteitem key={ind} note={note} updateNote={updateNote} />

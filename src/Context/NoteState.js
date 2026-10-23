@@ -93,7 +93,6 @@ console.log( response.status);
     setnotes(newNotes)
     const json = await response.json();
     console.log(json)
-    console.log(id ,notes)
 
   }
 

@@ -18,10 +18,10 @@ function NavBar() {
             <li className="nav-item">
                 <Link className={`nav-link ${location.pathname === "/about" ? "active" : "" } `} to="/about">About</Link>
             </li>
-            {/* <li className="nav-item">
-                <a className="nav-link" href="#">Link</a>
-            </li>
             <li className="nav-item">
+                <Link className={`nav-link ${location.pathname === "/login" ? "active" : "" } `} to="/login">Login</Link>
+            </li>
+            {/*<li className="nav-item">
                 <a className="nav-link disabled" aria-disabled="true">Disabled</a>
             </li> */}
         </ul>
