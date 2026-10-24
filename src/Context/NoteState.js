@@ -85,17 +85,13 @@ console.log( response.status);
     });
     // body: JSON.stringify({title: title,
     //         description: description})
-    let newNotes = JSON.parse(JSON.stringify((notes)))
-    for (let index = 0; index < newNotes.length; index++) {
-      const element = newNotes[index];
-      if (element._id === id) {
+      const newNotes = notes.map((note) =>
+    note._id === id
+      ? { ...note, title: title, description: description }
+      : note
+  );
 
-        newNotes[index].title = title
-        newNotes[index].description = description
-      }
-      break;
-    }
-    setnotes(newNotes)
+  setnotes(newNotes);
     const json = await response.json();
     console.log(json)
 

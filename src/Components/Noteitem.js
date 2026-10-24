@@ -5,8 +5,12 @@ import noteContext from "../Context/noteContext"
 function Notesitem(props) {
 
     const context = useContext(noteContext)
-    const { delet } = context
+    const { delet, showAlert } = context
     const { note, updateNote } = props
+    const deleted =()=> {
+        showAlert("Success", "Note added successfully")
+        delet(note._id) ;
+    }
     return (
         <div className="d-flex justify-content-center"style={{paddingRight: "20px"}}>
             
@@ -28,12 +32,9 @@ function Notesitem(props) {
                         <div>
                         <span className=" mx-3 " style={{cursor: "pointer"}} >View</span>
                        <span type="button" className="mx-3 btn-solid theme-primary" onClick={()=>{updateNote(note)}}>Edit</span>
-                        <span style={{ cursor: "pointer" }} onClick={() => { delet(note._id) }} >delete</span></div>
+                        <span style={{ cursor: "pointer" }} onClick={deleted} >delete</span></div>
                     </div>
-                    
-
-                    
-                </div>
+                 </div>
             </section>
         </div>
     )

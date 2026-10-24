@@ -215,7 +215,7 @@ function Addnote() {
                 type="text"
                 id="title"
                 name="title"
-                placeholder="e.g. My React learning plan"
+                placeholder="Title"
                 value={note.title}
                 onChange={onChange}
                 required
