@@ -1,4 +1,8 @@
-/* 
-* {
-background-color: #e9ebf0;
-} */
+
+body::-webkit-scrollbar {
+    width: 6px;   
+    height: 6px;    
+}
+html, body {
+    overflow-x: hidden; 
+}

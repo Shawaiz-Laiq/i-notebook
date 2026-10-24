@@ -1,8 +1,10 @@
 import './App.css';
 import NavBar from './Components/NavBar'
+import Notes from './Components/Notes'
 import Home from './Components/Home'
 import About from './Components/About'
 import Login from './Components/login'
+import Signup from './Components/singup';
 import {
   BrowserRouter as Router,
   Routes,
@@ -18,15 +20,16 @@ function App() {
   return (
     <NoteState>
       <Router>
-        <NavBar />
-       <Alert />
-        <div className="container">
+        {/* <NavBar />
+       <Alert /> */}
+       
           <Routes>
             <Route path="/about" element={<About />} />
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/home" element={ <><NavBar /> <Alert /> <Home /></>} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/" element={<Login />} />
           </Routes>
-        </div>
+       
       </Router>
     </NoteState>
   );

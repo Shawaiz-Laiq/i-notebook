@@ -8,14 +8,32 @@ function Notesitem(props) {
     const { delet } = context
     const { note, updateNote } = props
     return (
-        <div className="col-md-3">
-            <section className="card my-3" style={{ maxWidth: "320px" }}>
-                <div className="card-body">
-                    <h4 className="card-title">{note.title}</h4>
-                    <p className="card-text">{note.description}</p>
-                    <span style={{ cursor: "pointer" }} onClick={() => { delet(note._id) }} >delete</span> <span type="button" className="mx-3 btn-solid theme-primary" onClick={()=>{updateNote(note)}}>
+        <div className="d-flex justify-content-center"style={{paddingRight: "20px"}}>
+            
+            <section className="card my-3"   style={{
+            maxWidth: "750px",       
+            whiteSpace: "nowrap",   
+            overflow: "hidden",      
+            textOverflow: "ellipsis",
+            minWidth: "300px",
+            }}>
+                <div style={{padding: "20px"}}>
+                    {/* <h4 className="card-title">{note.title}</h4> */}
+                     <h4 className="card-title">hisdfffffffffffffffffffffffffffffffffffffffffdfgsdfsfdsffffffffffffffffffffffffffff</h4>
+                    {/* <p className="card-text">{note.description}</p> */}
+                    <p className="card-text">hellohisdfffffffffffffffhisdfffffffffffffffffffffffffffffffffffffffffdfgsdfsfdsffffffffffffffffffffffffhisdfffffffffffffffffffffffffffffffffffffffffdfgsdfsfdsffffffffffffffffffffffffffffffffffffffffffffffffffdfgsdfsfdsffffffffffffffffffffffff</p>
+                    <div className="d-flex  justify-content-between">
+                        <span  style={{fontSize: "12px", marginTop: "5px"}}>Date: 25-05-2025 at 22:09</span>
+                        <div>
+                        <span className=" mx-3 " style={{cursor: "pointer"}} >View</span>
+                        <span className=" mx-3"  style={{cursor: "pointer"}}>Edit</span>
+                        <span className=" mx-3"  style={{cursor: "pointer"}}>Delete</span></div>
+                    </div>
+                    
+
+                    {/* <span style={{ cursor: "pointer" }} onClick={() => { delet(note._id) }} >delete</span> <span type="button" className="mx-3 btn-solid theme-primary" onClick={()=>{updateNote(note)}}>
                         Edit
-                    </span>
+                    </span> */}
                 </div>
             </section>
         </div>
