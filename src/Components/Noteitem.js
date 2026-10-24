@@ -16,24 +16,23 @@ function Notesitem(props) {
             overflow: "hidden",      
             textOverflow: "ellipsis",
             minWidth: "300px",
+            width: "750px",
             }}>
                 <div style={{padding: "20px"}}>
                     {/* <h4 className="card-title">{note.title}</h4> */}
-                     <h4 className="card-title">hisdfffffffffffffffffffffffffffffffffffffffffdfgsdfsfdsffffffffffffffffffffffffffff</h4>
+                     <h4 className="card-title">{note.title}</h4>
                     {/* <p className="card-text">{note.description}</p> */}
-                    <p className="card-text">hellohisdfffffffffffffffhisdfffffffffffffffffffffffffffffffffffffffffdfgsdfsfdsffffffffffffffffffffffffhisdfffffffffffffffffffffffffffffffffffffffffdfgsdfsfdsffffffffffffffffffffffffffffffffffffffffffffffffffdfgsdfsfdsffffffffffffffffffffffff</p>
+                    <p className="card-text">{note.description}</p>
                     <div className="d-flex  justify-content-between">
                         <span  style={{fontSize: "12px", marginTop: "5px"}}>Date: 25-05-2025 at 22:09</span>
                         <div>
                         <span className=" mx-3 " style={{cursor: "pointer"}} >View</span>
-                        <span className=" mx-3"  style={{cursor: "pointer"}}>Edit</span>
-                        <span className=" mx-3"  style={{cursor: "pointer"}}>Delete</span></div>
+                       <span type="button" className="mx-3 btn-solid theme-primary" onClick={()=>{updateNote(note)}}>Edit</span>
+                        <span style={{ cursor: "pointer" }} onClick={() => { delet(note._id) }} >delete</span></div>
                     </div>
                     
 
-                    {/* <span style={{ cursor: "pointer" }} onClick={() => { delet(note._id) }} >delete</span> <span type="button" className="mx-3 btn-solid theme-primary" onClick={()=>{updateNote(note)}}>
-                        Edit
-                    </span> */}
+                    
                 </div>
             </section>
         </div>

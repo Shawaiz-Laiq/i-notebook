@@ -89,12 +89,12 @@ function Addnote() {
     e.preventDefault();
 
     if (note.title.trim().length < 3) {
-      showAlert("Warning", "Title kam az kam 3 characters ka hona chahiye");
+      showAlert("Warning", "Title Minimum 10 Character Long");
       return;
     }
 
     if (note.description.trim().length < 10) {
-      showAlert("Warning", "Description kam az kam 10 characters ki honi chahiye");
+      showAlert("Warning", "Description Minimum 10 Character Long");
       return;
     }
 
@@ -108,10 +108,11 @@ function Addnote() {
         description: "",
         tag: "General"
       });
+        //addNote(note.title, note.description)
 
       showAlert("Success", "Note added successfully!");
     } catch (error) {
-      showAlert("Warning", "Note add nahi ho saka");
+      showAlert("Warning", "Error");
     } finally {
       setLoading(false);
     }

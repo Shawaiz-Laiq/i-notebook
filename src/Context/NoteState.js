@@ -7,6 +7,8 @@ const NoteState = (props) => {
   const token = localStorage.getItem("token");
   const host = "http://localhost:5000";
   const notesInitial = []
+  const [chechError, setchechError] = useState()
+   const [chechresult, setchechresult] = useState()
 
 //fetch 
 const getNote = async () => {
@@ -19,7 +21,9 @@ const getNote = async () => {
     
     });
     const json = await response.json()
-
+    
+   setchechError(json.error)
+   setchechresult(json.length)
    console.log(json)
    setnotes(json)
 
@@ -40,7 +44,7 @@ const getNote = async () => {
             description: description})
     });
     const json = await response.json();
-     setnotes(prevNotes => [...prevNotes, json]);
+    setnotes(prevNotes => [...prevNotes, json]);
 
 console.log( response.status);
 
@@ -117,7 +121,7 @@ console.log( response.status);
 
 
   return (
-    <NoteContext.Provider value={{ notes, addNote, edit, delet, getNote ,showAlert , alerts}}>
+    <NoteContext.Provider value={{ notes, addNote, edit, delet, getNote ,showAlert , alerts , chechError, chechresult}}>
       {props.children}
     </NoteContext.Provider>
   )

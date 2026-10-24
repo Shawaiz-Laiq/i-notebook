@@ -52,7 +52,7 @@ function Notes() {
         setnote({ ...note, [e.target.name]: e.target.value })
 
     }
-   
+   console.log(notes.length)
 
     return (<>
     <style>{`
@@ -67,13 +67,6 @@ function Notes() {
           background: #888;
           border-radius: 10px;
         }
-        //    @media (max-width: 20000px) {.height {height : 85vh}}
-        //      @media (max-width: 3000px) {.height {height : 170vh}}
-        //     @media (max-width: 2000px) {.height {height : 170vh}}
-        //    @media (max-width: 1700px) {.height {height : 170vh}}
-        //     @media (max-width: 1600px) {.height {height : 165vh}}
-        //     @media (max-width: 1400px) {.height {height : 170vh}}
-        //     @media (max-width: 1000px) {.height {height : 170vh}}
         @media (max-width: 900px) {
           .login-welcome-panel {
             width: 100vw !important;
@@ -110,6 +103,42 @@ function Notes() {
             </dialog>
 
             <div className="custom-scroll, height"  style={{backgroundColor: "rgb(244, 246, 252)", overflow:"scroll", padding: "20px" }}>
+                <center><div
+  className="d-flex align-items-center gap-2"
+  style={{ maxWidth: "500px", width: "100%" }}
+>
+  <div
+    className="d-flex align-items-center flex-grow-1"
+    style={{
+      border: "1px solid #ddd",
+      borderRadius: "12px",
+      padding: "4px 12px",
+      backgroundColor: "#fff",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
+    }}
+  >
+    <i className="fa-solid fa-magnifying-glass text-secondary me-2"></i>
+
+    <input
+      type="search"
+      placeholder="Search your notes..."
+      className="form-control border-0 shadow-none"
+      style={{ outline: "none" }}
+    />
+  </div>
+
+  <button
+    className="btn text-white"
+    style={{
+      background: "linear-gradient(135deg, #6d5dfc, #8b5cf6)",
+      borderRadius: "10px",
+      padding: "10px 20px",
+      fontWeight: "600"
+    }}
+  >
+    Search
+  </button>
+</div> </center>
                 <h1
             style={{
               fontSize: "clamp(20px, 2vw, 30px)",
@@ -118,29 +147,15 @@ function Notes() {
               
             }}
           >
-            Your Notes
-          </h1>
-                {/* {notes.length ===0 &&  <div className=" container"> There is no Notes to display </div>}
-                {notes.length ===0 &&  notes.map((note, ind) => {
-                    return ( */}
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
-                        <Noteitem />
+            Your Notes  
+          </h1> 
+                {notes.length === 0 &&  <div className=" container"> There is no Notes to display </div>}
+                { notes.length >= 0 &&   notes.map((note, ind) => {
+                    return (
+                        <Noteitem note={note} updateNote={updateNote} />
 
-                    {/* ) */}
-                {/* })} */}
+                    )
+                })}
             </div></div></>
     )
 }

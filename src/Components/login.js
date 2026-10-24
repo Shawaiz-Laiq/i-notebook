@@ -105,7 +105,7 @@ function Login() {
       );
 
       const json = await response.json();
-            console.log(Invalid)
+           
 
       if (!response.ok) {
         showAlert("Warning", json.error || "Login failed");
@@ -113,16 +113,19 @@ function Login() {
         return;
       }
 
-      const token = json.jwpdata;
       navigate("/home");
+      if(json.success === true) {
+        localStorage.setItem("token", json.jwtdata);
+      }
+      
 
-      if (!token) {
+      if (!json.jwtdata) {
         showAlert("Warning", "Worng data");
         setInvalid(true)
         return;
       }
 
-      localStorage.setItem("token", token);
+      
       showAlert("Success", "Login successful!");
       setInvalid(false)
       

@@ -13,13 +13,13 @@ function NavBar() {
     <>
         <ul className="nav nav-tabs">
             <li className="nav-item">
-                <Link className={`nav-link ${location.pathname === "/" ? "active" : "" } `} aria-current="page" to="/">Home</Link>
+                <Link className={`nav-link ${location.pathname === "/home" ? "active" : "" } `} aria-current="page" to="/home">Home</Link>
             </li>
             <li className="nav-item">
                 <Link className={`nav-link ${location.pathname === "/about" ? "active" : "" } `} to="/about">About</Link>
             </li>
             <li className="nav-item">
-                <Link className={`nav-link ${location.pathname === "/login" ? "active" : "" } `} to="/login">Login</Link>
+                <Link className={`nav-link ${location.pathname === "/" ? "active" : "" } `} to="/">LogOut</Link>
             </li>
             {/*<li className="nav-item">
                 <a className="nav-link disabled" aria-disabled="true">Disabled</a>
