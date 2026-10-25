@@ -1,13 +1,11 @@
-import { useState, useEffect,useContext } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
-import noteContext from '../Context/noteContext'
+import Footer from "./footer";
 
 
 
 function Account() {
-    const context = useContext(noteContext);
-    const { setusername } = context
     const navigate = useNavigate();
     const [id, setid] = useState('')
     const [name, setname] = useState('')
@@ -41,21 +39,32 @@ function Account() {
 
             const json = await response.json();
 
-            if (!response.ok) {
-                console.error("Failed to fetch user:", json);
-                return;
-            }
-
             setname(json.name ?? "");
             setemaila(json.email ?? "");
             setdate(json.time ?? "");
             setid(json._id ?? "");
-            setusername(json.name ?? "");
+
         } catch (error) {
             console.error("Something went wrong:", error.message);
         }
     };
     handleSubmit()
+    function formatMyDate(isoString) {
+  const dateObj = new Date(isoString);
+
+  
+  const date = dateObj.toLocaleDateString('en-CA'); 
+
+  let hours = dateObj.getHours();
+  const minutes = dateObj.getMinutes().toString().padStart(2, '0'); 
+
+  hours = hours % 12;
+  hours = hours ? hours : 12; 
+
+  return `${date} At ${hours}:${minutes}`;
+}
+const incomingData = date
+    
     return (
     <>
         {check === false ? <Loading /> : <div style={{
@@ -127,7 +136,7 @@ function Account() {
 
                     <div style={cardStyle}>
                         <label>Date of Joining</label>
-                        <h3 style={{ fontSize: "20px" }}>{date}</h3>
+                        <h3 style={{ fontSize: "20px" }}>{formatMyDate(incomingData)}</h3>
                         <small>📅 Member since joining</small>
                     </div>
                 </div>
@@ -145,9 +154,7 @@ function Account() {
                         Your premium account experience
                     </p>
                 </div>
-            </div>
-           
-        <div
+                <div
             onClick={() => { localStorage.removeItem("token"); window.location.href = "/";}}
             style={{
                 display: "flex",
@@ -166,7 +173,11 @@ function Account() {
                 transition: "0.3s" }}>
                 Logout
             </div>
+            </div>
+           
+        
         </div>}
+        <Footer/>
     </>
     );
 }
@@ -188,5 +199,8 @@ const buttonStyle = {
     color: "white",
     cursor: "pointer"
 };
+
+
+
 
 export default Account;

@@ -13,7 +13,6 @@
 //             addNote(note.title, note.description)
 //             showAlert("Success", "Note added successfully");
 //             const token = localStorage.getItem("token");
-//             console.log(token)
 //         } else {
 //             if (title.length < 10 && description.length < 10) {
 //                  showAlert("Warning", "Title and Description is too short");

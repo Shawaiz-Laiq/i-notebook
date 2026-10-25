@@ -43,12 +43,7 @@ const getNote = async () => {
             description: description})
     });
     const json = await response.json();
-    setnotes(prevNotes => [...prevNotes, json]);
-
-console.log( response.status);
-
-
-
+    setnotes(prevNotes => [json, ...prevNotes]);
 
   }
 
@@ -59,22 +54,21 @@ console.log( response.status);
     setnotes(newNotes)
 
 
-    const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+    await fetch(`${host}/api/notes/deletenote/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'auth-token': token
       },
     });
-    const json = await response.json()
-    console.groupCollapsed(json)
+
 
   }
 
   // Edit mote
   const edit = async (id, title, description) => {
 
-    const response = await fetch(`${host}/api/notes/updatenote/${id}`, {
+     await fetch(`${host}/api/notes/updatenote/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -91,8 +85,7 @@ console.log( response.status);
   );
 
   setnotes(newNotes);
-    const json = await response.json();
-    console.log(json)
+    
 
   }
 
@@ -113,13 +106,13 @@ console.log( response.status);
     }, 2500);
   }
  
-  const [username, setusername] = useState("")
+
 
   
 
 
   return (
-    <NoteContext.Provider value={{ notes, addNote, edit, delet, getNote ,showAlert , alerts , chechError, chechresult ,username, setusername}}>
+    <NoteContext.Provider value={{ notes, addNote, edit, delet, getNote ,showAlert , alerts , chechError, chechresult }}>
       {props.children}
     </NoteContext.Provider>
   )

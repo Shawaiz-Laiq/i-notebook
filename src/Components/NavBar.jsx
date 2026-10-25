@@ -1,16 +1,45 @@
 import {Link, useLocation} from "react-router-dom"
-import { useEffect } from "react";
+import { useState } from "react";
+
 
 
 function NavBar() {
-    let location = useLocation();
-    useEffect(() => {
-      console.log(location.pathname)
+      const token = localStorage.getItem("token");
+      const [name, setname] = useState('')
+
+     const handleSubmit = async () => {
+        try {
+            const response = await fetch(
+                "http://localhost:5000/api/auth/getuser",
+                {
+                    method: "POST",
+                    headers: {
+                        "auth-token": token
+                    }
+                }
+            );
+
+            const json = await response.json();
+
+            if (!response.ok) {
+                console.error("Failed to fetch user:", json);
+                return;
+            }
+
+            setname(json.name ?? "");
+        } catch (error) {
+            console.error("Something went wrong:", error.message);
+        }
+    };
+     handleSubmit()
+   
+
+
+
     
-    }, [location])
-    const logout = () => {
-         localStorage.removeItem("token");
-    }
+    let location = useLocation();
+
+    
     
     return (
     <>
@@ -22,10 +51,10 @@ function NavBar() {
                 <Link className={`nav-link ${location.pathname === "/about" ? "active" : "" } `} to="/about">About</Link>
             </li>
             <li className="nav-item">
-                <Link className={`nav-link ${location.pathname === "/" ? "active" : "" } `} onClick={logout} to="/">LogOut</Link>
+                <Link className={`nav-link ${location.pathname === "/account" ? "active" : "" } `}  to="/account">Account</Link>
             </li>
             <li className="nav-item">
-                <Link className={`nav-link ${location.pathname === "/account" ? "active" : "" } `}  to="/account">Account</Link>
+                <div style={{fontWeight: "500" ,margin: "8px"}}>{name}</div>
             </li>
         </ul>
     </>

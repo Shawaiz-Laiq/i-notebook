@@ -4,6 +4,9 @@ import { useContext , useEffect, useState } from "react";
 import noteContext from '../Context/noteContext'
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
+import Footer from "./footer";
+
+
 
 function Home() {
     const context = useContext(noteContext);
@@ -21,7 +24,6 @@ useEffect(() => {
     } if(chechresult >= 0) {
         setcheck(true)
     } 
-    console.log(chechresult)
   }, 1000);
 
 
@@ -47,6 +49,7 @@ useEffect(() => {
                 
             }}>
                 <Addnote />
+                <Footer/>
                 <div className="hide"> <Notes /></div>
                 
             </div>
@@ -65,6 +68,7 @@ useEffect(() => {
                 </div>
             </div>
         </div>}
+        
     </div>
     )
 }

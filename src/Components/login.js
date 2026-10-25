@@ -16,7 +16,6 @@
 //              body: JSON.stringify({email :cerden.email, password: cerden.password})
 //         });
 //         const json = await response.json();
-//         //console.log(json. jwtdata)
 //         if (json.success){
 //          localStorage.setItem('token' , json.jwtdata)
 //             //history.push('/');
@@ -65,6 +64,7 @@
 import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import NoteContext from "../Context/noteContext";
+import Footer from "./footer";
 
 function Login() {
   const [cerden, setcerden] = useState({
@@ -157,6 +157,7 @@ function Login() {
   };
 
   return (
+    <>
     <div
       style={{
         minHeight: "85vh",
@@ -391,6 +392,8 @@ function Login() {
         </div>
       </div>
     </div>
+      <Footer/>
+      </>
   );
 }
 

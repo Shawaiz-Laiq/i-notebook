@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import noteContext from '../Context/noteContext'
 import Noteitem from './Noteitem'
 
+
 function Notes() {
   const context = useContext(noteContext);
   const { notes, getNote } = context
@@ -9,10 +10,11 @@ function Notes() {
     getNote()
 
   }, [])
+
+
   const [title, settitle] = useState('')
   const [description, setdescription] = useState('')
   const [note, setnote] = useState({ id: "", etitle: "", edescription: "" })
-  const ref = useRef(null);
   const refclose = useRef(null);
   const dialogRef = useRef(null);
   const { edit, showAlert } = context
@@ -38,7 +40,6 @@ function Notes() {
 
   }
   // const handelclick = () => {
-  //   console.log("update", note)
   //   edit(note.id, note.etitle, note.edescription)
   //   refclose.current.click()
   //    showAlert("Success", "Note Edited successfully");
@@ -59,7 +60,13 @@ function Notes() {
     setnote({ ...note, [e.target.name]: e.target.value })
 
   }
-  console.log(notes.length)
+  const [search, setSearch] = useState("");
+
+  const filteredNotes = notes.filter((note) =>
+  note.title.toLowerCase().includes(search.toLowerCase()) ||
+  note.description.toLowerCase().includes(search.toLowerCase())
+);
+
 
   return (<>
     <style>{`
@@ -273,12 +280,12 @@ function Notes() {
           >
             <i className="fa-solid fa-magnifying-glass text-secondary me-2"></i>
 
-            <input
-              type="search"
-              placeholder="Search your notes..."
+           <input
+              type="text"
+              placeholder="🔍 Search your notes..."
               className="form-control border-0 shadow-none"
-              style={{ outline: "none" }}
-            />
+              value={search}
+              onChange={(e) => setSearch(e.target.value)} />
           </div>
 
           <button
@@ -303,14 +310,17 @@ function Notes() {
           }}
         >
           Your Notes
-        </h1>
-        {notes.length === 0 && <div className=" container"> There is no Notes to display </div>}
-        {notes.length >= 0 && notes.map((note, ind) => {
+        </h1> 
+      
+        <div> {notes.length === 0 && <div className=" container"> There is no Notes to display  </div>}
+        {notes.length >= 0 && filteredNotes.map((note, ind) => {
           return (
-            <Noteitem note={note} updateNote={updateNote} />
+            <Noteitem note={note} key={ind} updateNote={updateNote} /> 
           )
-        })}
+        })} </div> 
+          
       </div>
+      
     </div></>
   )
 }

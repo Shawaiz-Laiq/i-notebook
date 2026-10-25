@@ -2,6 +2,7 @@
 import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import NoteContext from "../Context/noteContext";
+import Footer from "./footer";
 
 function Signup() {
   const [credentials, setCredentials] = useState({
@@ -79,7 +80,6 @@ function Signup() {
         setInvalName(true)
         setInvalAccount(true)
       }
-      console.log(json)
 
       if (!response.ok) {
         showAlert("Warning", json.error || "Signup failed");
@@ -120,6 +120,7 @@ function Signup() {
   };
 
   return (
+    <>
     <div
       style={{
         minHeight: "85vh",
@@ -374,6 +375,8 @@ function Signup() {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }
 
