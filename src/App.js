@@ -4,6 +4,7 @@ import Notes from './Components/Notes'
 import Home from './Components/Home'
 import About from './Components/About'
 import Login from './Components/login'
+import Account from "./Components/Account";
 import Signup from './Components/singup';
 import {
   BrowserRouter as Router,
@@ -26,6 +27,7 @@ function App() {
           <Routes>
             <Route path="/about" element={<About />} />
             <Route path="/home" element={ <><NavBar /> <Alert /> <Home /></>} />
+            <Route path="/account" element={<><NavBar /> <Account /> </>} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/" element={<Login />} />
           </Routes>

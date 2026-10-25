@@ -8,6 +8,9 @@ function NavBar() {
       console.log(location.pathname)
     
     }, [location])
+    const logout = () => {
+         localStorage.removeItem("token");
+    }
     
     return (
     <>
@@ -19,11 +22,11 @@ function NavBar() {
                 <Link className={`nav-link ${location.pathname === "/about" ? "active" : "" } `} to="/about">About</Link>
             </li>
             <li className="nav-item">
-                <Link className={`nav-link ${location.pathname === "/" ? "active" : "" } `} to="/">LogOut</Link>
+                <Link className={`nav-link ${location.pathname === "/" ? "active" : "" } `} onClick={logout} to="/">LogOut</Link>
             </li>
-            {/*<li className="nav-item">
-                <a className="nav-link disabled" aria-disabled="true">Disabled</a>
-            </li> */}
+            <li className="nav-item">
+                <Link className={`nav-link ${location.pathname === "/account" ? "active" : "" } `}  to="/account">Account</Link>
+            </li>
         </ul>
     </>
     )

@@ -28,39 +28,35 @@ useEffect(() => {
 
   return () => clearTimeout(timer);
 }, [chechError, chechresult]);
-console.log(chechError)
-console.log(chechresult)
+
 
 
     return (<div>
         <style>{`
-        @media (max-width: 900px) {
-          .login-welcome-panel {
-            display:block !important;
+        @media (min-width: 900px) {
+          .hide {
+            display: none !important;
           }        
+          .hei {
+          height: 47rem !important ;
+          }  
         }
       `}</style>
-       { check === false ? <Loading/> :  <div className="d-flex gap-3" style={{ height: "47rem" }}>
+       { check === false ? <Loading/> :  <div className="d-flex gap-3 hei" style={{ height: "47rem" }}>
             <div style={{
-                position: "sticky",
-                top: "10px",
-                alignSelf: "flex-start",
-                flex: "0 0 40%"
+                
             }}>
                 <Addnote />
+                <div className="hide"> <Notes /></div>
+                
             </div>
             <div style={{
-                flex: 1,
-                height: "100%",
-                overflowY: "auto"
+               
             }}>
                 <div
                     className="notes-scroll"
                     style={{
-                        flex: 1,
-                        height: "100%",
-                        overflowY: "auto",
-                        scrollbarWidth: "none"
+                       
                     }}>
                     <Notes />
                     <style>

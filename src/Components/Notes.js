@@ -12,12 +12,14 @@ function Notes() {
   const [title, settitle] = useState('')
   const [description, setdescription] = useState('')
   const [note, setnote] = useState({ id: "", etitle: "", edescription: "" })
-  const ref = useRef(null)
-  const refclose = useRef(null)
+  const ref = useRef(null);
+  const refclose = useRef(null);
+  const dialogRef = useRef(null);
   const { edit, showAlert } = context
   const updateNote = (currentNote) => {
-    ref.current.click()
+   // ref.current.click()
     setnote({ id: currentNote._id, etitle: currentNote.title, edescription: currentNote.description })
+    dialogRef.current?.showModal();
     if (title.length >= 10 && description.length >= 10) {
       edit(note.etitle, note.edescription)
       // showAlert("Success", "Note added successfully");
@@ -35,12 +37,17 @@ function Notes() {
     }
 
   }
-  const handelclick = () => {
-    console.log("update", note)
-    edit(note.id, note.etitle, note.edescription)
-    refclose.current.click()
-     showAlert("Success", "Note Edited successfully");
-  }
+  // const handelclick = () => {
+  //   console.log("update", note)
+  //   edit(note.id, note.etitle, note.edescription)
+  //   refclose.current.click()
+  //    showAlert("Success", "Note Edited successfully");
+  // }
+  const handelclick = async () => {
+  await edit(note.id, note.etitle, note.edescription);
+  dialogRef.current?.close();
+  showAlert("Success", "Note Edited successfully");
+};
 
   const titleclick = (e) => {
     settitle(e.target.value)
@@ -73,10 +80,13 @@ function Notes() {
           } 
         }
       `}</style>
+
+      
     <div className="login-welcome-panel"
       style={{ width: "50vw" }}>
-      <span ref={ref} type="button" className="mx-3 btn-solid theme-primary d-none" data-bs-toggle="dialog" data-bs-target="#exampleDialog">Edit</span>
+      {/* <span ref={ref} type="button" className="mx-3 btn-solid theme-primary" data-bs-toggle="dialog" data-bs-target="#exampleDialog">Edit</span> */}
       <dialog
+       ref={dialogRef}
         id="exampleDialog"
         style={{
           width: "min(92%, 480px)",
@@ -85,8 +95,9 @@ function Notes() {
           borderRadius: "18px",
           background: "#fff",
           color: "#1f2937",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.2)"
+          boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
         }}>
+          
         <div
           style={{
             display: "flex",
@@ -113,7 +124,7 @@ function Notes() {
           </div>
 
           <button
-            type="button" onClick={() => refclose.current?.click()} aria-label="Close"
+            type="button" onClick={() => dialogRef.current?.close()} aria-label="Close"
             style={{
               border: "none",
               background: "#f3f0ff",
@@ -197,7 +208,7 @@ function Notes() {
             <button
               ref={refclose}
               type="button"
-              onClick={() => document.getElementById("exampleDialog")?.close()}
+              onClick={() => dialogRef.current?.close()}
               style={{
                 padding: "11px 17px",
                 border: "1px solid #ded9e9",

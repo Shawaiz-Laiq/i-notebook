@@ -13,9 +13,25 @@ function Signup() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [newpass, setnewpass] = useState('');
+  const [confpass, setconfpass] = useState('');
+  const [Invalid, setInvalid] = useState(false)
+  const [InvalName, setInvalName] = useState(false)
+  const [InvalAccount, setInvalAccount] = useState(false)
 
   const { showAlert } = useContext(NoteContext);
   const navigate = useNavigate();
+
+  const onChangenew =(e) => {
+   const value = e.target.value;
+   setnewpass(value);
+   setInvalid(confpass !== value);
+  }
+  const onChangecon =(e) => {
+   const value = e.target.value;
+   setconfpass(value);
+   setInvalid(newpass !== value);
+  }
 
   const onChange = (e) => {
     setCredentials({
@@ -51,20 +67,33 @@ function Signup() {
       );
 
       const json = await response.json();
+      if(json.errors === 'acoount already exists' )  {
+        setInvalAccount(true)
+        setInvalName(false)
+      }
+      if (json.errors === 'This name is already taken') {
+        setInvalName(true)
+        setInvalAccount(false)
+      } 
+      if (json.errors === 'acoount already exists , This name is already taken') {
+        setInvalName(true)
+        setInvalAccount(true)
+      }
+      console.log(json)
 
       if (!response.ok) {
         showAlert("Warning", json.error || "Signup failed");
         return;
       }
 
-      const token = json.authtoken || json.token;
+      const token = json.authtoken || json.jwtdata;
 
       if (token) {
-        localStorage.setItem("token", token);
+        localStorage.setItem("token", json.jwtdata);
       }
 
       showAlert("Success", "Account created successfully!");
-      navigate(token ? "/" : "/login");
+      navigate(json.jwtdata ? "/home" : "/");
     } catch (error) {
       showAlert("Warning", "Server se connection nahi ho raha");
     } finally {
@@ -208,6 +237,11 @@ function Signup() {
                 minLength={2}
                 style={inputStyle}
               />
+               {InvalName === true && <span style={{
+                fontSize: ".7rem",
+                color:"red"
+                }}>This name is already taken</span>}
+              
             </div>
 
             <div style={{ marginBottom: "17px" }}>
@@ -225,6 +259,10 @@ function Signup() {
                 required
                 style={inputStyle}
               />
+              {InvalAccount === true && <span style={{
+                fontSize: ".7rem",
+                color:"red"
+                }}>Account already exists</span>}
             </div>
 
             <div style={{ marginBottom: "17px" }}>
@@ -237,7 +275,7 @@ function Signup() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Create a password"
                 value={credentials.password}
-                onChange={onChange}
+                onChange={(e) => {onChange(e); onChangenew(e)}}
                 autoComplete="new-password"
                 required
                 minLength={5}
@@ -255,7 +293,7 @@ function Signup() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter password again"
                 value={credentials.confirmPassword}
-                onChange={onChange}
+                onChange={(e) => {onChange(e); onChangecon(e)}}
                 autoComplete="new-password"
                 required
                 minLength={5}
@@ -272,7 +310,10 @@ function Signup() {
                   color: "#5368ed",
                   cursor: "pointer"
                 }}
-              >
+              >{Invalid === true && <span style={{
+                fontSize: ".7rem",
+                color:"red"
+                }}>Passwords do not match</span>}
                 <input
                   type="checkbox"
                   checked={showPassword}
@@ -280,6 +321,7 @@ function Signup() {
                 />
                 Show password
               </label>
+              
             </div>
 
             <button

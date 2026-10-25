@@ -24,7 +24,6 @@ const getNote = async () => {
     
    setchechError(json.error)
    setchechresult(json.length)
-   console.log(json)
    setnotes(json)
 
   }
@@ -113,11 +112,14 @@ console.log( response.status);
       setAlerts(null);
     }, 2500);
   }
+ 
+  const [username, setusername] = useState("")
 
+  
 
 
   return (
-    <NoteContext.Provider value={{ notes, addNote, edit, delet, getNote ,showAlert , alerts , chechError, chechresult}}>
+    <NoteContext.Provider value={{ notes, addNote, edit, delet, getNote ,showAlert , alerts , chechError, chechresult ,username, setusername}}>
       {props.children}
     </NoteContext.Provider>
   )
