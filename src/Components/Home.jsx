@@ -15,7 +15,7 @@ function Home() {
     const [check, setcheck] = useState(false)
     useEffect(() => {
             getNote()
-    }, [])
+    }, [getNote])
 
 useEffect(() => {
   const timer = setTimeout(() => {
@@ -29,7 +29,7 @@ useEffect(() => {
 
 
   return () => clearTimeout(timer);
-}, [chechError, chechresult]);
+}, [chechError, chechresult, navigate]);
 
 
 

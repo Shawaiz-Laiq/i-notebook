@@ -23,7 +23,7 @@ function Account() {
             }
         }, 1000);
         return () => clearTimeout(timer);
-    }, [name]);
+    }, [name , navigate]);
 
     const handleSubmit = async () => {
         try {

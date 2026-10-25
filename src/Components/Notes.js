@@ -9,7 +9,7 @@ function Notes() {
   useEffect(() => {
     getNote()
 
-  }, [])
+  }, [getNote])
 
 
   const [title, settitle] = useState('')
