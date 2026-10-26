@@ -200,38 +200,45 @@ function About() {
         </section>
 
         {/* Project Status */}
-        <section style={styles.section}>
-          <h2 style={styles.heading}>🚀 Project Status & Future Plans</h2>
+<section style={styles.section}>
+  <h2 style={styles.heading}>
+    🌍 Global Access & Project Status
+  </h2>
 
-          <div style={{
-            padding: "18px",
-            borderRadius: "12px",
-            background: "#fef3c7",
-            borderLeft: "5px solid #f59e0b",
-            marginBottom: "20px"
-          }}>
-            <strong>Current Status: Under Development</strong>
-            <p style={{ lineHeight: 1.8, marginBottom: 0 }}>
-              The application is currently functional and undergoing
-              development and testing. Development started approximately
-              one week ago, and improvements are ongoing.
-            </p>
-          </div>
+  <div
+    style={{
+      padding: "18px",
+      borderRadius: "12px",
+      background: "#dcfce7",
+      borderLeft: "5px solid #16a34a",
+      marginBottom: "20px"
+    }}
+  >
+    <strong>✅ Status: Available Online</strong>
+    <p style={{ lineHeight: 1.8, marginBottom: 0 }}>
+      iNotebook is now available online, allowing users to
+      access their personal notes from anywhere in the world.
+      The application is designed to make note-taking simple,
+      convenient, and accessible across locations.
+    </p>
+  </div>
 
-          <p style={{ color: "#555", lineHeight: 1.9 }}>
-            At present, the backend uses MongoDB and may depend on a
-            development server that is not continuously available.
-            If the server is stopped or the database connection fails,
-            some features may show an error.
-          </p>
+  <p style={{ color: "#555", lineHeight: 1.9 }}>
+    With iNotebook, you can create new notes, view your saved
+    notes, edit existing notes, and manage your personal
+    information whenever you need it. Your notes are stored
+    in a MongoDB database and can be accessed after logging
+    in to your account from an internet-connected device.
+  </p>
 
-          <p style={{ color: "#555", lineHeight: 1.9 }}>
-            Our next goal is to deploy the frontend and backend to
-            reliable hosting, improve availability, and make the
-            application accessible online. We also plan to improve
-            performance, usability, and security over time.
-          </p>
-        </section>
+  <p style={{ color: "#555", lineHeight: 1.9 }}>
+    Our goal is to provide a convenient and reliable
+    note-taking experience for users worldwide. We will
+    continue improving the application's performance,
+    usability, security, and features to make managing notes
+    even easier.
+  </p>
+</section>
 
         {/* Feedback */}
         <section style={{

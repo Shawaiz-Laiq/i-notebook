@@ -263,7 +263,7 @@ function Notes() {
   `}</style>
       </dialog>
 
-      <div className="custom-scroll, height" style={{ backgroundColor: "rgb(244, 246, 252)", overflow: "scroll", padding: "20px" }}>
+      <div className="custom-scroll, height" style={{ padding: "20px" }}>
         <center><div
           className="d-flex align-items-center gap-2"
           style={{ maxWidth: "500px", width: "100%" }}
@@ -315,7 +315,7 @@ function Notes() {
         <div> { notes.length === 0 && <div className=" container"> There is no Notes to display  </div>}
         {notes.length >= 0 && filteredNotes.map((note, ind) => {
           return (
-            <Noteitem note={note} key={ind} updateNote={updateNote} /> 
+            <Noteitem  note={note} key={ind} updateNote={updateNote} index={ind} /> 
           )
         })} </div> 
           

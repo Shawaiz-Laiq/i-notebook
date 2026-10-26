@@ -4,7 +4,8 @@ function Footer() {
           padding: "28px 10px 5px",
           textAlign: "center",
           color: "#6b7280",
-          lineHeight: 1.8
+          lineHeight: 1.8,
+          backgroundColor: "rgb(244, 246, 252)"
         }}>
           <p style={{ marginBottom: "6px" }}>
             Made with ❤️ by <strong style={{ color: "#6d28d9" }}>

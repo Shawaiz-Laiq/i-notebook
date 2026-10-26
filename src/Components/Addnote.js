@@ -149,7 +149,7 @@ function Addnote() {
       `}</style>
     <div className="login-welcome-panel"
       style={{
-        minHeight: "85vh",
+       
         padding: "35px 15px",
         background: "#f4f6fc",
         fontFamily: "Arial, sans-serif",

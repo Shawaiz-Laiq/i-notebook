@@ -11,7 +11,6 @@ function Account() {
     const [name, setname] = useState('')
     const [emaila, setemaila] = useState('')
     const [date, setdate] = useState('')
-    const token = localStorage.getItem("token");
     const [check, setcheck] = useState(false)
 
     useEffect(() => {
@@ -25,10 +24,19 @@ function Account() {
         return () => clearTimeout(timer);
     }, [name , navigate]);
 
+
+useEffect(() => {
     const handleSubmit = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/", { replace: true });
+            return;
+        }
+
         try {
             const response = await fetch(
-                "http://localhost:5000/api/auth/getuser",
+                "https://firest-backend.vercel.app/api/auth/getuser",
                 {
                     method: "POST",
                     headers: {
@@ -39,16 +47,26 @@ function Account() {
 
             const json = await response.json();
 
+            if (!response.ok) {
+                localStorage.removeItem("token");
+                navigate("/", { replace: true });
+                return;
+            }
+
             setname(json.name ?? "");
             setemaila(json.email ?? "");
             setdate(json.time ?? "");
             setid(json._id ?? "");
+            setcheck(true);
 
         } catch (error) {
-            console.error("Something went wrong:", error.message);
+            console.error("Account fetch error:", error);
         }
     };
-    handleSubmit()
+
+    handleSubmit();
+}, [navigate]);
+
     function formatMyDate(isoString) {
   const dateObj = new Date(isoString);
 

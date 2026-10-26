@@ -5,4 +5,7 @@ body::-webkit-scrollbar {
 }
 html, body {
     overflow-x: hidden; 
+     background-color: rgb(244, 246, 252)
+     /* overflow-y: scroll;  */
 }
+
