@@ -13,10 +13,9 @@ function Home() {
     const navigate = useNavigate();
     const { chechError, chechresult, getNote } = context
     const [check, setcheck] = useState(false)
-   
-    useEffect(() => {
+
+
         getNote();
-    }, [getNote]);
 
 
 useEffect(() => {
