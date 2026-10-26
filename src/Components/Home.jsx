@@ -13,10 +13,11 @@ function Home() {
     const navigate = useNavigate();
     const { chechError, chechresult, getNote } = context
     const [check, setcheck] = useState(false)
+   
     useEffect(() => {
-            getNote()
-            console.log("errror")
-    }, [chechError, chechresult, navigate])
+        getNote();
+    }, [getNote]);
+
 
 useEffect(() => {
   const timer = setTimeout(() => {
@@ -26,11 +27,11 @@ useEffect(() => {
         setcheck(true)
     } 
   }, 1000);
-console.log("errror2")
+
 
 
   return () => clearTimeout(timer);
-}, [chechError, chechresult, navigate]);
+}, [chechError, chechresult, navigate , ]);
 
 
 
