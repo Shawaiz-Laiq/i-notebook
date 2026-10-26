@@ -94,7 +94,7 @@ function Login() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/auth/login",
+       "https://firest-backend.vercel.app/api/auth/login",
         {
           method: "POST",
           headers: {
@@ -107,22 +107,14 @@ function Login() {
       const json = await response.json();
            
 
-      if (!response.ok) {
-        showAlert("Warning", json.error || "Login failed");
-        setInvalid(true)
-        return;
-      }
-
-      navigate("/home");
-      if(json.success === true) {
+      if (response.ok && json.success === true && json.jwtdata) {
         localStorage.setItem("token", json.jwtdata);
-      }
-      
-
-      if (!json.jwtdata) {
-        showAlert("Warning", "Worng data");
-        setInvalid(true)
-        return;
+        showAlert("Success", "Login successful!");
+        setInvalid(false);
+        navigate("/home");
+      } else {
+        showAlert("Warning", json.error || "Invalid email or password");
+        setInvalid(true);
       }
 
       

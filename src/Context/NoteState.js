@@ -5,7 +5,7 @@ import { useRef } from "react";
 
 const NoteState = (props) => {
   const token = localStorage.getItem("token");
-  const host = "http://localhost:5000";
+  const host = "https://firest-backend.vercel.app";
   const notesInitial = []
   const [chechError, setchechError] = useState()
    const [chechresult, setchechresult] = useState()
