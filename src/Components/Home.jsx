@@ -15,7 +15,8 @@ function Home() {
     const [check, setcheck] = useState(false)
     useEffect(() => {
             getNote()
-    }, [getNote])
+            console.log("errror")
+    }, [])
 
 useEffect(() => {
   const timer = setTimeout(() => {
@@ -25,7 +26,7 @@ useEffect(() => {
         setcheck(true)
     } 
   }, 1000);
-
+console.log("errror2")
 
 
   return () => clearTimeout(timer);

@@ -6,10 +6,10 @@ import Noteitem from './Noteitem'
 function Notes() {
   const context = useContext(noteContext);
   const { notes, getNote } = context
-  useEffect(() => {
-    getNote()
+  // useEffect(() => {
+  //   getNote()
 
-  }, [getNote])
+  // }, [getNote])
 
 
   const [title, settitle] = useState('')
@@ -312,7 +312,7 @@ function Notes() {
           Your Notes
         </h1> 
       
-        <div> {notes.length === 0 && <div className=" container"> There is no Notes to display  </div>}
+        <div> { notes.length === 0 && <div className=" container"> There is no Notes to display  </div>}
         {notes.length >= 0 && filteredNotes.map((note, ind) => {
           return (
             <Noteitem note={note} key={ind} updateNote={updateNote} /> 
