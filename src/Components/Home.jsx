@@ -16,7 +16,7 @@ function Home() {
     useEffect(() => {
             getNote()
             console.log("errror")
-    }, [])
+    }, [chechError, chechresult, navigate])
 
 useEffect(() => {
   const timer = setTimeout(() => {
