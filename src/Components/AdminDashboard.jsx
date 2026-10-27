@@ -17,6 +17,7 @@ const sections = {
   deletedusers: 'Deleted Users',
 };
 
+
 const formatDate = (date) => {
   if (!date) return '—';
 
@@ -55,6 +56,10 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [notesSlide, setNotesSlide] = useState(0);
+  const [notesHistory, setNotesHistory] = useState(null);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState('');
 
   const logout = useCallback(() => {
     localStorage.removeItem('admin-auth-token');
@@ -105,6 +110,59 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   }, [navigate]);
+
+  
+const loadNotesHistory = useCallback(async () => {
+  const token = localStorage.getItem('admin-auth-token');
+
+  if (!token) {
+    navigate('/admin/login', { replace: true });
+    return;
+  }
+
+  setHistoryLoading(true);
+  setHistoryError('');
+
+  try {
+    const response = await fetch(
+      `${API_BASE}/api/auth/admin/notes-history`,
+      {
+        method: 'GET',
+        headers: {
+          'auth-token': token
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.status === 401 || response.status === 403) {
+      localStorage.removeItem('admin-auth-token');
+      navigate('/admin/login', { replace: true });
+      return;
+    }
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.error || data.message || 'Could not load notes history.'
+      );
+    }
+
+    setNotesHistory(data);
+  } catch (err) {
+    setHistoryError(
+      err.message || 'Failed to fetch notes history.'
+    );
+  } finally {
+    setHistoryLoading(false);
+  }
+}, [navigate]);
+
+useEffect(() => {
+  loadNotesHistory();
+}, [loadNotesHistory]);
+
+
   const deleteUser = async (user) => {
   if (!user?._id) {
     setError('User ID not found.');
@@ -114,6 +172,8 @@ export default function AdminDashboard() {
   const confirmed = window.confirm(
     `Are you sure you want to move ${user.name || user.email} to Deleted Users?`
   );
+
+  
 
   if (!confirmed) return;
 
@@ -161,7 +221,8 @@ const users =
 
 const onlineUsers = stats?.onlineUsers ?? 0;
 const loginEvents = stats?.loginEvents24h ?? 0;
-const uniqueUsers = stats?.uniqueUsers24h ?? 0;
+const uniqueUsers = stats?.recentLogins.length
+console.log(stats?.recentLogins)
 
   const loginCounts = stats?.loginCountsByUser ?? [];
   const recentLogins = stats?.recentLogins ?? [];
@@ -540,8 +601,8 @@ const restoreUser = async (id) => {
           {/* NOTES */}
           {activeSection === 'notes' && (
             <>
-              <section className="admin-welcome">
-                <div>
+            <section className="admin-welcome">
+     <div>
                   <p className="admin-kicker">WORKSPACE ACTIVITY</p>
                   <h1>Notes overview <span>▤</span></h1>
                   <p className="admin-subtitle">
@@ -549,17 +610,74 @@ const restoreUser = async (id) => {
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  className="admin-refresh"
-                  onClick={loadStats}
-                  disabled={loading}
-                >
-                  ↻ &nbsp; {loading ? 'Loading...' : 'Refresh data'}
-                </button>
-              </section>
+      <button
+        type="button"
+        className="admin-refresh"
+        onClick={loadStats}
+        disabled={loading}
+      >
+        ↻ &nbsp; {loading ? 'Loading...' : 'Refresh data'}
+      </button>
+    </section>
 
-              <section style={sectionStyle}>
+    <section className="admin-stats">
+      <StatCard
+        label="Total Notes"
+        value={loading && !stats ? '…' : (stats?.totalNotes ?? 0)}
+        detail="All notes in the database"
+        icon="📝"
+      />
+
+      <StatCard
+        label="New Notes"
+        value={loading && !stats ? '…' : (stats?.newNotes24h ?? 0)}
+        detail="Created in the last 24 hours"
+        icon="●"
+      />
+
+      <StatCard
+        label="Notes This Month"
+        value={loading && !stats ? '…' : (stats?.newNotesMonth ?? 0)}
+        detail="Created in the last 30 days"
+        icon="♧"
+      />
+    </section>
+              
+<div className="notes-slider">
+  <div className="notes-slider-header">
+    <span>Notes Analytics</span>
+
+    <div className="notes-slider-controls">
+      <button
+        type="button"
+        onClick={() => setNotesSlide(0)}
+        disabled={notesSlide === 0}
+        aria-label="Previous notes analytics"
+      >
+        ←
+      </button>
+
+      <span>{notesSlide + 1} / 2</span>
+
+      <button
+        type="button"
+        onClick={() => setNotesSlide(1)}
+        disabled={notesSlide === 1}
+        aria-label="Next notes analytics"
+      >
+        →
+      </button>
+    </div>
+  </div>
+
+  <div className="notes-slider-window">
+    <div
+      className="notes-slider-track"
+      style={{
+        transform: `translateX(-${notesSlide * 100}%)`
+      }}
+    >
+      <section style={sectionStyle}>
                 <p className="admin-kicker">NOTES ANALYTICS</p>
                 <h2>Notes activity by user</h2>
                 <p>Recorded note activity during the last 24 hours.</p>
@@ -594,6 +712,64 @@ const restoreUser = async (id) => {
                   </tbody>
                 </table>
               </section>
+
+      <section style={sectionStyle}>
+      <p className="admin-kicker">NOTES ANALYTICS</p>
+      <h2>Notes by User</h2>
+
+      <table style={tableStyle}>
+        <thead>
+          <tr>
+            <th style={cellStyle}>#</th>
+            <th style={cellStyle}>User</th>
+            <th style={cellStyle}>Email</th>
+            <th style={cellStyle}>Total Notes</th>
+            <th style={cellStyle}>Last Note Added</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {!stats && loading ? (
+            renderTableMessage('Loading notes...', 5)
+          ) : (stats?.notesByUser ?? []).length === 0 ? (
+            renderTableMessage('No notes found.', 5)
+          ) : (
+            stats.notesByUser.map((user, index) => (
+              <tr key={user.userId || user.email || index}>
+                <td style={cellStyle}>{index + 1}</td>
+
+                <td style={cellStyle}>
+                  {user.name || 'Unknown'}
+                </td>
+
+                <td style={cellStyle}>
+                  {user.email || '—'}
+                </td>
+
+                <td style={cellStyle}>
+                  <strong>{user.totalNotes ?? 0}</strong>
+                </td>
+
+                <td style={cellStyle}>
+                  {user.lastNoteAdded
+                    ? new Date(user.lastNoteAdded).toLocaleString()
+                    : '—'}
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </section>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+              
             </>
           )}
 
@@ -693,12 +869,12 @@ const restoreUser = async (id) => {
 
     <section className="admin-stats">
      
-<StatCard
-  label="Registered Users"
-  value={loading && !stats ? '…' : users}
-  detail="All registered user accounts"
-  icon="♙"
-/>
+      <StatCard
+        label="Registered Users"
+        value={loading && !stats ? '…' : users}
+        detail="All registered user accounts"
+        icon="♙"
+      />
 
 
       <StatCard
@@ -861,100 +1037,122 @@ const restoreUser = async (id) => {
             </>
           )}
 
-          {activeSection === 'totalnotes' && (
-  <>
-    <section className="admin-welcome">
-      <div>
-        <p className="admin-kicker">NOTES ACTIVITY</p>
-        <h1>Total Notes Management <span>📝</span></h1>
-        <p className="admin-subtitle">
-          Track total notes, recently created notes, and user activity.
-        </p>
-      </div>
+          
+{activeSection === 'totalnotes' && ( <>
+<section className="admin-welcome">
+                <div>
+                  <p className="admin-kicker">NOTES HISTORY</p>
+                  <h1>
+                   Total Notes History <span>✦</span>
+                  </h1>
+                  <p className="admin-subtitle">
+                   All active and permanently deleted notes with user details.
+                  </p>
+                </div>
 
-      <button
-        type="button"
-        className="admin-refresh"
-        onClick={loadStats}
-        disabled={loading}
-      >
-        ↻ &nbsp; {loading ? 'Loading...' : 'Refresh data'}
-      </button>
+                <button
+                  type="button"
+                  className="admin-refresh"
+                  onClick={loadStats}
+                  disabled={loading}
+                >
+                  ↻ &nbsp; {loading ? 'Loading...' : 'Refresh data'}
+                </button>
+              </section>
+              <section className="admin-stats">
+     
+      <StatCard
+         label="Total Notes"
+      value={notesHistory?.totalNotes ?? 0}
+      detail="All recorded notes"
+      icon="📝"
+      />
+
+
+      <StatCard
+       label="Active Notes"
+      value={notesHistory?.activeNotes ?? 0}
+      detail="Currently available notes"
+      icon="✓"
+      />
+
+      <StatCard
+         label="Deleted Notes"
+      value={notesHistory?.deletedNotes ?? 0}
+      detail="Notes removed by users"
+      icon="⌫"
+      />
     </section>
 
-    <section className="admin-stats">
-      <StatCard
-        label="Total Notes"
-        value={loading && !stats ? '…' : (stats?.totalNotes ?? 0)}
-        detail="All notes in the database"
-        icon="📝"
-      />
 
-      <StatCard
-        label="New Notes"
-        value={loading && !stats ? '…' : (stats?.newNotes24h ?? 0)}
-        detail="Created in the last 24 hours"
-        icon="●"
-      />
 
-      <StatCard
-        label="Notes This Month"
-        value={loading && !stats ? '…' : (stats?.newNotesMonth ?? 0)}
-        detail="Created in the last 30 days"
-        icon="♧"
-      />
-    </section>
 
-    <section style={sectionStyle}>
-      <p className="admin-kicker">NOTES ANALYTICS</p>
-      <h2>Notes by User</h2>
+  <section style={sectionStyle}>
 
-      <table style={tableStyle}>
-        <thead>
-          <tr>
-            <th style={cellStyle}>#</th>
-            <th style={cellStyle}>User</th>
-            <th style={cellStyle}>Email</th>
-            <th style={cellStyle}>Total Notes</th>
-            <th style={cellStyle}>Last Note Added</th>
+
+
+
+  <table style={tableStyle}>
+    <thead>
+      <tr>
+        <th style={cellStyle}>#</th>
+        <th style={cellStyle}>Title</th>
+        <th style={cellStyle}>Username</th>
+        <th style={cellStyle}>Created Date</th>
+        <th style={cellStyle}>Deleted Date</th>
+        <th style={cellStyle}>Status</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {!notesHistory ? (
+        renderTableMessage('Loading notes history...', 6)
+      ) : notesHistory.notes.length === 0 ? (
+        renderTableMessage('No notes history found.', 6)
+      ) : (
+        notesHistory.notes.map((note, index) => (
+          <tr key={note.id}>
+            <td style={cellStyle}>{index + 1}</td>
+
+            <td style={cellStyle}>
+              <strong>{note.title || 'Untitled'}</strong>
+            </td>
+
+            <td style={cellStyle}>
+              {note.username || 'Unknown'}
+            </td>
+
+            <td style={cellStyle}>
+              {note.createdAt
+                ? new Date(note.createdAt).toLocaleString()
+                : '—'}
+            </td>
+
+            <td style={cellStyle}>
+              {note.deletedAt
+                ? new Date(note.deletedAt).toLocaleString()
+                : '—'}
+            </td>
+
+            <td style={cellStyle}>
+              <span
+                style={{
+                  color: note.status === 'active' ? 'green' : 'red',
+                  fontWeight: 'bold'
+                }}
+              >
+                {note.status === 'active' ? 'Active' : 'Deleted'}
+              </span>
+            </td>
           </tr>
-        </thead>
-
-        <tbody>
-          {!stats && loading ? (
-            renderTableMessage('Loading notes...', 5)
-          ) : (stats?.notesByUser ?? []).length === 0 ? (
-            renderTableMessage('No notes found.', 5)
-          ) : (
-            stats.notesByUser.map((user, index) => (
-              <tr key={user.userId || user.email || index}>
-                <td style={cellStyle}>{index + 1}</td>
-
-                <td style={cellStyle}>
-                  {user.name || 'Unknown'}
-                </td>
-
-                <td style={cellStyle}>
-                  {user.email || '—'}
-                </td>
-
-                <td style={cellStyle}>
-                  <strong>{user.totalNotes ?? 0}</strong>
-                </td>
-
-                <td style={cellStyle}>
-                  {user.lastNoteAdded
-                    ? new Date(user.lastNoteAdded).toLocaleString()
-                    : '—'}
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </section>
-  </>
+        ))
+      )}
+    </tbody>
+  </table>
+</section>
+</>
 )}
+
           
 
          <Footer/>

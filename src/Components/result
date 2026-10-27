@@ -1,0 +1,336 @@
+{
+  "success": true,
+  "totalUsers": [
+    {
+      "_id": "6adefcdfb21ef26af1b4dd2a",
+      "name": "Wania khan",
+      "email": "wania@gmail.com",
+      "time": "2026-10-26T07:10:23.767Z",
+      "lastLogin": "2026-10-27T16:30:35.739Z",
+      "lastSeen": "2026-10-27T16:30:35.739Z",
+      "role": "user"
+    },
+    {
+      "_id": "6adf875ac54f827364cc1b45",
+      "name": "Shawaiz....",
+      "email": "shawaiz1@gmail.com",
+      "time": "2026-10-26T17:01:14.695Z",
+      "lastLogin": "2026-10-27T16:32:01.342Z",
+      "lastSeen": "2026-10-27T16:32:01.344Z",
+      "role": "user"
+    },
+    {
+      "_id": "6ae04aa346fd7fd71a8ee3ac",
+      "name": "khanzada",
+      "email": "shawaiz32@gmail.com",
+      "role": "user",
+      "time": "2026-10-27T06:54:27.882Z",
+      "lastLogin": "2026-10-27T11:14:57.384Z",
+      "lastSeen": "2026-10-27T11:14:57.386Z"
+    },
+    {
+      "_id": "6ae0795583e8e8fa6218b47a",
+      "name": "Shawaizas",
+      "email": "shawaizas@gmail.com",
+      "role": "user",
+      "lastLogin": null,
+      "lastSeen": null,
+      "time": "2026-10-27T10:13:41.741Z"
+    },
+    {
+      "_id": "6ae07d9611494ef909f6da2a",
+      "name": "asdasd asdas",
+      "email": "asd@sda.com",
+      "role": "user",
+      "lastLogin": "2026-10-27T10:37:21.401Z",
+      "lastSeen": "2026-10-27T10:37:21.401Z",
+      "time": "2026-10-27T10:31:50.334Z"
+    },
+    {
+      "_id": "6ae0a952e5d31ea971820dfb",
+      "name": "Shawaiz23",
+      "email": "shawaiz23@gmail.com",
+      "role": "user",
+      "lastLogin": null,
+      "lastSeen": null,
+      "time": "2026-10-27T13:38:26.627Z"
+    },
+    {
+      "_id": "6ae0cd51ca10332c5eb71a63",
+      "name": "Shawaizasaaae",
+      "email": "shawaizaasaae@gmail.com",
+      "time": "2026-10-27T13:11:15.779Z",
+      "role": "user",
+      "lastLogin": null,
+      "lastSeen": null
+    },
+    {
+      "_id": "6ae0cf1f467d33b69d7b8dee",
+      "name": "shawaiz",
+      "email": "shawaizs@j.com",
+      "role": "user",
+      "lastLogin": "2026-10-27T16:22:54.408Z",
+      "lastSeen": "2026-10-27T16:22:54.411Z",
+      "time": "2026-10-27T16:19:43.044Z"
+    }
+  ],
+  "onlineUsers": 0,
+  "loginEvents24h": 17,
+  "recentLogins": [
+    {
+      "loginAt": "2026-10-27T16:32:01.565Z",
+      "name": "Shawaiz....",
+      "email": "shawaiz1@gmail.com",
+      "role": "user"
+    },
+    {
+      "loginAt": "2026-10-27T16:30:35.930Z",
+      "name": "Wania khan",
+      "email": "wania@gmail.com",
+      "role": "user"
+    },
+    {
+      "loginAt": "2026-10-27T16:22:54.607Z",
+      "name": "shawaiz",
+      "email": "shawaizs@j.com",
+      "role": "user"
+    },
+    {
+      "loginAt": "2026-10-27T11:14:57.599Z",
+      "name": "khanzada",
+      "email": "shawaiz32@gmail.com",
+      "role": "user"
+    },
+    {
+      "loginAt": "2026-10-27T10:37:21.608Z",
+      "name": "asdasd asdas",
+      "email": "asd@sda.com",
+      "role": "user"
+    }
+  ],
+  "loginCountsByUser": [
+    {
+      "loginCount": 5,
+      "name": "Wania khan",
+      "email": "wania@gmail.com"
+    },
+    {
+      "loginCount": 1,
+      "name": "Shawaiz....",
+      "email": "shawaiz1@gmail.com"
+    },
+    {
+      "loginCount": 1,
+      "name": "asdasd asdas",
+      "email": "asd@sda.com"
+    },
+    {
+      "loginCount": 1,
+      "name": "khanzada",
+      "email": "shawaiz32@gmail.com"
+    },
+    {
+      "loginCount": 1,
+      "name": "shawaiz",
+      "email": "shawaizs@j.com"
+    }
+  ],
+  "noteCountsByUser": [
+    {
+      "userId": "6adefcdfb21ef26af1b4dd2a",
+      "name": "Wania khan",
+      "email": "wania@gmail.com",
+      "notesCreated": 1,
+      "notesEdited": 0,
+      "notesDeleted": 0
+    },
+    {
+      "userId": "6ae07d9611494ef909f6da2a",
+      "name": "asdasd asdas",
+      "email": "asd@sda.com",
+      "notesCreated": 2,
+      "notesEdited": 1,
+      "notesDeleted": 1
+    },
+    {
+      "userId": "6ae04aa346fd7fd71a8ee3ac",
+      "name": "khanzada",
+      "email": "shawaiz32@gmail.com",
+      "notesCreated": 2,
+      "notesEdited": 1,
+      "notesDeleted": 1
+    },
+    {
+      "userId": "6ae0cf1f467d33b69d7b8dee",
+      "name": "shawaiz",
+      "email": "shawaizs@j.com",
+      "notesCreated": 1,
+      "notesEdited": 0,
+      "notesDeleted": 0
+    }
+  ],
+  "totalRegisteredUsers": 8,
+  "newUsers24h": 6,
+  "newUsersMonth": 8,
+  "allUsers": [
+    {
+      "_id": "6ae0cf1f467d33b69d7b8dee",
+      "name": "shawaiz",
+      "email": "shawaizs@j.com",
+      "lastLogin": "2026-10-27T16:22:54.408Z",
+      "time": "2026-10-27T16:19:43.044Z"
+    },
+    {
+      "_id": "6ae0a952e5d31ea971820dfb",
+      "name": "Shawaiz23",
+      "email": "shawaiz23@gmail.com",
+      "lastLogin": null,
+      "time": "2026-10-27T13:38:26.627Z"
+    },
+    {
+      "_id": "6ae0cd51ca10332c5eb71a63",
+      "name": "Shawaizasaaae",
+      "email": "shawaizaasaae@gmail.com",
+      "time": "2026-10-27T13:11:15.779Z",
+      "lastLogin": null
+    },
+    {
+      "_id": "6ae07d9611494ef909f6da2a",
+      "name": "asdasd asdas",
+      "email": "asd@sda.com",
+      "lastLogin": "2026-10-27T10:37:21.401Z",
+      "time": "2026-10-27T10:31:50.334Z"
+    },
+    {
+      "_id": "6ae0795583e8e8fa6218b47a",
+      "name": "Shawaizas",
+      "email": "shawaizas@gmail.com",
+      "lastLogin": null,
+      "time": "2026-10-27T10:13:41.741Z"
+    },
+    {
+      "_id": "6ae04aa346fd7fd71a8ee3ac",
+      "name": "khanzada",
+      "email": "shawaiz32@gmail.com",
+      "time": "2026-10-27T06:54:27.882Z",
+      "lastLogin": "2026-10-27T11:14:57.384Z"
+    },
+    {
+      "_id": "6adf875ac54f827364cc1b45",
+      "name": "Shawaiz....",
+      "email": "shawaiz1@gmail.com",
+      "time": "2026-10-26T17:01:14.695Z",
+      "lastLogin": "2026-10-27T16:32:01.342Z"
+    },
+    {
+      "_id": "6adefcdfb21ef26af1b4dd2a",
+      "name": "Wania khan",
+      "email": "wania@gmail.com",
+      "time": "2026-10-26T07:10:23.767Z",
+      "lastLogin": "2026-10-27T16:30:35.739Z"
+    }
+  ],
+  "totalNotes": 4,
+  "newNotes24h": 4,
+  "newNotesMonth": 4,
+  "notesByUser": [
+    {
+      "totalNotes": 1,
+      "lastNoteAdded": "2026-10-27T11:15:42.994Z",
+      "userId": "6ae04aa346fd7fd71a8ee3ac",
+      "name": "khanzada",
+      "email": "shawaiz32@gmail.com"
+    },
+    {
+      "totalNotes": 1,
+      "lastNoteAdded": "2026-10-27T16:16:45.943Z",
+      "userId": "6adefcdfb21ef26af1b4dd2a",
+      "name": "Wania khan",
+      "email": "wania@gmail.com"
+    },
+    {
+      "totalNotes": 1,
+      "lastNoteAdded": "2026-10-27T16:19:58.071Z",
+      "userId": "6ae0cf1f467d33b69d7b8dee",
+      "name": "shawaiz",
+      "email": "shawaizs@j.com"
+    },
+    {
+      "totalNotes": 1,
+      "lastNoteAdded": "2026-10-27T10:31:59.304Z",
+      "userId": "6ae07d9611494ef909f6da2a",
+      "name": "asdasd asdas",
+      "email": "asd@sda.com"
+    }
+  ],
+  "deletedUsers": [
+    {
+      "_id": "6ae0dad82c99e0f5629d2dd1",
+      "originalUserId": "6ae07934f0e0b53afaf83dee",
+      "name": "sdf",
+      "email": "sdf@asd.com",
+      "role": "user",
+      "lastLogin": null,
+      "lastSeen": null,
+      "loginCount": 0,
+      "time": "2026-10-27T10:13:08.160Z",
+      "deletedAt": "2026-10-27T17:09:44.450Z",
+      "__v": 0
+    },
+    {
+      "_id": "6ae0dac12c99e0f5629d2dd0",
+      "originalUserId": "6ae04fc8df2a11e7e5922ea3",
+      "name": "Shawaiza",
+      "email": "shawaiza@gmail.com",
+      "role": "user",
+      "lastLogin": null,
+      "lastSeen": null,
+      "loginCount": 0,
+      "time": "2026-10-27T07:16:24.606Z",
+      "deletedAt": "2026-10-27T17:09:21.229Z",
+      "__v": 0
+    },
+    {
+      "_id": "6ae0cd71ca10332c5eb71a64",
+      "originalUserId": "6ae0c6b2155595d673e0bf78",
+      "name": "sdsd",
+      "email": "ssd@s.com",
+      "role": "user",
+      "lastLogin": null,
+      "lastSeen": null,
+      "loginCount": 0,
+      "time": "2026-10-27T15:43:46.911Z",
+      "createdAt": "2026-10-27T15:43:46.915Z",
+      "deletedAt": "2026-10-27T16:12:33.043Z",
+      "__v": 0
+    },
+    {
+      "_id": "6ae0a94be5d31ea971820dfa",
+      "originalUserId": "6ae0a41ce7672818528f5f91",
+      "name": "Shawaiz23",
+      "email": "shawaiz23@gmail.com",
+      "role": "user",
+      "lastLogin": null,
+      "lastSeen": null,
+      "loginCount": 0,
+      "time": "2026-10-27T13:16:12.460Z",
+      "createdAt": "2026-10-27T13:16:12.461Z",
+      "deletedAt": "2026-10-27T13:38:19.351Z",
+      "__v": 0
+    },
+    {
+      "_id": "6ae09a9d658a48a632c39360",
+      "originalUserId": "6ae09a6d658a48a632c3935f",
+      "name": "Shawaizasaa",
+      "email": "shawaizaasa@gmail.com",
+      "role": "user",
+      "lastLogin": null,
+      "lastSeen": null,
+      "loginCount": 0,
+      "time": "2026-10-27T12:34:53.300Z",
+      "createdAt": "2026-10-27T12:34:53.308Z",
+      "deletedAt": "2026-10-27T12:35:41.667Z",
+      "__v": 0
+    }
+  ]
+}
