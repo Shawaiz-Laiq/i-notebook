@@ -5,7 +5,7 @@ import './Admin.css';
 import Footer from './footer';
 
 const API_BASE =
-  process.env.REACT_APP_API_URL || 'https://firest-backend.vercel.app';
+  process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const sections = {
   overview: 'Overview',
@@ -13,7 +13,8 @@ const sections = {
   notes: 'Notes',
   reports: 'Reports',
   totalusers: 'Totalusers',
-  totalnotes: 'Totalnotes'
+  totalnotes: 'Total Notes',
+  deletedusers: 'Deleted Users',
 };
 
 const formatDate = (date) => {
@@ -26,16 +27,26 @@ const formatDate = (date) => {
   return parsedDate.toLocaleString();
 };
 
-const StatCard = ({ label, value, detail, icon, featured = false }) => (
-  <article className={`admin-stat ${featured ? 'featured' : ''}`}>
-    <div className="admin-stat-label">
-      {label} <span>{icon}</span>
-    </div>
-    <strong className="admin-number">{value}</strong>
-    <small>{detail}</small>
-    {featured && <div className="admin-watermark">USERS</div>}
-  </article>
-);
+const StatCard = ({ label, value, detail, icon, featured = false }) => {
+  const safeValue =
+    typeof value === 'string' || typeof value === 'number'
+      ? value
+      : '—';
+
+  return (
+    <article className={`admin-stat ${featured ? 'featured' : ''}`}>
+      <div className="admin-stat-label">
+        {label} <span>{icon}</span>
+      </div>
+
+      <strong className="admin-number">{safeValue}</strong>
+
+      <small>{detail}</small>
+
+      {featured && <div className="admin-watermark">USERS</div>}
+    </article>
+  );
+};
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -73,6 +84,7 @@ export default function AdminDashboard() {
       );
 
       const data = await response.json();
+      
 
       if (response.status === 401 || response.status === 403) {
         localStorage.removeItem('admin-auth-token');
@@ -93,15 +105,63 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   }, [navigate]);
+  const deleteUser = async (user) => {
+  if (!user?._id) {
+    setError('User ID not found.');
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Are you sure you want to move ${user.name || user.email} to Deleted Users?`
+  );
+
+  if (!confirmed) return;
+
+  const token = localStorage.getItem('admin-auth-token');
+
+  try {
+    setError('');
+
+    const response = await fetch(
+      `${API_BASE}/api/auth/admin/delete-user/${user._id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'auth-token': token
+        }
+      }
+    );
+
+    const data = await response.json();
+    console.log("ADMIN STATS RESPONSE:", data);
+console.log("DELETED USERS:", data.deletedUsers);
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || data.message || 'Could not delete user.');
+    }
+
+    await loadStats();
+
+    window.alert(data.message || 'User moved to Deleted Users successfully.');
+  } catch (err) {
+    setError(err.message || 'Failed to delete user.');
+  }
+};
 
   useEffect(() => {
     loadStats();
   }, [loadStats]);
 
-  const users = stats?.totalUsers ?? stats?.totalAccounts ?? 0;
-  const onlineUsers = stats?.onlineUsers ?? 0;
-  const loginEvents = stats?.loginEvents24h ?? 0;
-  const uniqueUsers = stats?.uniqueUsers24h ?? 0;
+const users =
+  typeof stats?.totalRegisteredUsers === 'number'
+    ? stats.totalRegisteredUsers
+    : Array.isArray(stats?.allUsers)
+      ? stats.allUsers.length
+      : 0;
+
+const onlineUsers = stats?.onlineUsers ?? 0;
+const loginEvents = stats?.loginEvents24h ?? 0;
+const uniqueUsers = stats?.uniqueUsers24h ?? 0;
 
   const loginCounts = stats?.loginCountsByUser ?? [];
   const recentLogins = stats?.recentLogins ?? [];
@@ -136,9 +196,49 @@ export default function AdminDashboard() {
       </td>
     </tr>
   );
+  const [restoringId, setRestoringId] = useState(null);
+
+const restoreUser = async (id) => {
+  if (!window.confirm('Restore this user account?')) return;
+
+  const token = localStorage.getItem('admin-auth-token');
+
+  try {
+    setRestoringId(id);
+    setError('');
+
+    const response = await fetch(
+      `${API_BASE}/api/auth/admin/restore-user/${id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'auth-token': token
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.error || 'Could not restore user.'
+      );
+    }
+
+    await loadStats();
+
+    window.alert(data.message || 'User restored successfully!');
+  } catch (err) {
+    window.alert(err.message || 'Restore failed.');
+  } finally {
+    setRestoringId(null);
+  }
+};
+
 
   return (
     <div className="admin-layout">
+      
       {/* Sidebar */}
       <aside className="admin-sidebar">
         <Link to="/admin/dashboard" className="admin-side-brand">
@@ -206,16 +306,26 @@ export default function AdminDashboard() {
            📊 &nbsp; Total User
             {activeSection === 'totalusers' && <i>•</i>}
           </button>
+          <button
+  type="button"
+  className={`admin-nav-item ${
+    activeSection === 'deletedusers' ? 'selected' : ''
+  }`}
+  onClick={() => setActiveSection('deletedusers')}
+>
+  🗑️ &nbsp; Deleted Users
+  {activeSection === 'deletedusers' && <i>•</i>}
+</button>
 
           <button
             type="button"
             className={`admin-nav-item ${
-              activeSection === 'Totalnotes' ? 'selected' : ''
+              activeSection === 'totalnotes' ? 'selected' : ''
             }`}
-            onClick={() => setActiveSection('Totalnotes')}
+            onClick={() => setActiveSection('totalnotes')}
           >
            📊 &nbsp; Total Notes
-            {activeSection === 'Totalnotes' && <i>•</i>}
+            {activeSection === 'totalnotes' && <i>•</i>}
           </button>
         </nav>
 
@@ -401,6 +511,8 @@ export default function AdminDashboard() {
                       <th style={cellStyle}>User</th>
                       <th style={cellStyle}>Email</th>
                       <th style={cellStyle}>Login count</th>
+                      <th style={cellStyle}>Action</th>
+                      
                     </tr>
                   </thead>
                   <tbody>
@@ -416,6 +528,7 @@ export default function AdminDashboard() {
                             <td style={cellStyle}>
                               <strong>{user.loginCount ?? 0}</strong>
                             </td>
+                            <td style={cellStyle}>—</td>
                           </tr>
                         ))}
                   </tbody>
@@ -579,12 +692,14 @@ export default function AdminDashboard() {
     </section>
 
     <section className="admin-stats">
-      <StatCard
-        label="Registered Users"
-        value={loading && !stats ? '…' : (stats?.totalRegisteredUsers ?? 0)}
-        detail="All registered user accounts"
-        icon="♙"
-      />
+     
+<StatCard
+  label="Registered Users"
+  value={loading && !stats ? '…' : users}
+  detail="All registered user accounts"
+  icon="♙"
+/>
+
 
       <StatCard
         label="New Users"
@@ -613,14 +728,15 @@ export default function AdminDashboard() {
             <th style={cellStyle}>Email</th>
             <th style={cellStyle}>Created On</th>
             <th style={cellStyle}>Last Login</th>
+            <th style={cellStyle}>Action</th>
           </tr>
         </thead>
 
         <tbody>
           {!stats && loading ? (
-            renderTableMessage('Loading users...', 5)
+            renderTableMessage('Loading users...', 6)
           ) : (stats?.allUsers ?? []).length === 0 ? (
-            renderTableMessage('No registered users found.', 5)
+            renderTableMessage('No registered users found.', 6)
           ) : (
             stats.allUsers.map((user, index) => (
               <tr key={user._id || user.email || index}>
@@ -643,7 +759,28 @@ export default function AdminDashboard() {
                 <td style={cellStyle}>
                   {user.lastLogin
                     ? new Date(user.lastLogin).toLocaleString()
-                    : 'Same Day & Time'}
+                    : '—'}
+                </td>
+
+                <td style={cellStyle}>
+                  {user.role === 'admin' ? (
+                    <span>Admin account</span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => deleteUser(user)}
+                      style={{
+                        background: '#dc2626',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '7px 12px',
+                        borderRadius: '6px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
                 </td>
               </tr>
             ))
@@ -655,7 +792,76 @@ export default function AdminDashboard() {
 )}
 
 
-          {activeSection === 'Totalnotes' && (
+          {activeSection === 'deletedusers' && (
+            <>
+              <section className="admin-welcome">
+                <div>
+                  <p className="admin-kicker">ACCOUNT RECOVERY</p>
+                  <h1>Deleted Users <span>🗑️</span></h1>
+                  <p className="admin-subtitle">
+                    Accounts moved here using soft delete.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="admin-refresh"
+                  onClick={loadStats}
+                  disabled={loading}
+                >
+                  ↻ &nbsp; {loading ? 'Loading...' : 'Refresh data'}
+                </button>
+              </section>
+
+              <section style={sectionStyle}>
+                <h2>Deleted accounts</h2>
+                <p>
+                  The backend must return a <code>deletedUsers</code> array from
+                  <code> /api/auth/admin/stats</code> for these records to appear.
+                </p>
+                <table style={tableStyle}>
+                  <thead>
+                    <tr>
+                      <th style={cellStyle}>#</th>
+                      <th style={cellStyle}>User</th>
+                      <th style={cellStyle}>Email</th>
+                      <th style={cellStyle}>Deleted On</th>
+                      <th style={cellStyle}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(stats?.deletedUsers ?? []).length === 0 ? (
+                      renderTableMessage(
+                        loading
+                          ? 'Loading deleted users...'
+                          : 'No deleted users returned by the backend.',
+                        5
+                      )
+                    ) : (
+                      stats.deletedUsers.map((user, index) => (
+                        <tr key={user._id || user.email || index}>
+                          <td style={cellStyle}>{index + 1}</td>
+                          <td style={cellStyle}>{user.name || 'Unknown'}</td>
+                          <td style={cellStyle}>{user.email || '—'}</td>
+                          <td style={cellStyle}>{formatDate(user.deletedAt)}</td>
+                          <td style={cellStyle}>
+                            <button
+                              type="button"
+                              onClick={() => restoreUser(user._id)}
+                              disabled={restoringId === user._id}
+                            >
+                              {restoringId === user._id ? 'Restoring...' : '↻ Restore'}
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </section>
+            </>
+          )}
+
+          {activeSection === 'totalnotes' && (
   <>
     <section className="admin-welcome">
       <div>
