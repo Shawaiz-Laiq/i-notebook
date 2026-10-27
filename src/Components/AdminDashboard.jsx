@@ -31,7 +31,7 @@ const StatCard = ({ label, value, detail, icon, featured = false }) => (
     <div className="admin-stat-label">
       {label} <span>{icon}</span>
     </div>
-    <strong className="admin-number">{value ?? 0}</strong>
+    <strong className="admin-number">{value}</strong>
     <small>{detail}</small>
     {featured && <div className="admin-watermark">USERS</div>}
   </article>
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
     loadStats();
   }, [loadStats]);
 
-  const users = stats?.totalusers ?? stats?.totalAccounts ?? 0;
+  const users = stats?.totalUsers ?? stats?.totalAccounts ?? 0;
   const onlineUsers = stats?.onlineUsers ?? 0;
   const loginEvents = stats?.loginEvents24h ?? 0;
   const uniqueUsers = stats?.uniqueUsers24h ?? 0;
@@ -212,7 +212,7 @@ export default function AdminDashboard() {
             className={`admin-nav-item ${
               activeSection === 'Totalnotes' ? 'selected' : ''
             }`}
-            onClick={() => setActiveSection('totalnotes')}
+            onClick={() => setActiveSection('Totalnotes')}
           >
            📊 &nbsp; Total Notes
             {activeSection === 'Totalnotes' && <i>•</i>}
