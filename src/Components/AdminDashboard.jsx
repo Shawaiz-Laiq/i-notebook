@@ -5,7 +5,7 @@ import './Admin.css';
 import Footer from './footer';
 
 const API_BASE =
-  process.env.REACT_APP_API_URL || 'http://localhost:5000';
+  process.env.REACT_APP_API_URL || 'https://firest-backend.vercel.app';
 
 const sections = {
   overview: 'Overview',
