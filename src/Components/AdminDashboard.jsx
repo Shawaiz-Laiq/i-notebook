@@ -58,8 +58,8 @@ export default function AdminDashboard() {
   const [error, setError] = useState('');
   const [notesSlide, setNotesSlide] = useState(0);
   const [notesHistory, setNotesHistory] = useState(null);
-  const [historyLoading, setHistoryLoading] = useState(false);
-  const [historyError, setHistoryError] = useState('');
+ // const [historyLoading, setHistoryLoading] = useState(false);
+  //const [historyError, setHistoryError] = useState('');
 
   const logout = useCallback(() => {
     localStorage.removeItem('admin-auth-token');
@@ -120,8 +120,8 @@ const loadNotesHistory = useCallback(async () => {
     return;
   }
 
-  setHistoryLoading(true);
-  setHistoryError('');
+ // setHistoryLoading(true);
+ // setHistoryError('');
 
   try {
     const response = await fetch(
@@ -150,11 +150,11 @@ const loadNotesHistory = useCallback(async () => {
 
     setNotesHistory(data);
   } catch (err) {
-    setHistoryError(
-      err.message || 'Failed to fetch notes history.'
-    );
+    // setHistoryError(
+    //   err.message || 'Failed to fetch notes history.'
+    // );
   } finally {
-    setHistoryLoading(false);
+   // setHistoryLoading(false);
   }
 }, [navigate]);
 
