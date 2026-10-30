@@ -4,7 +4,7 @@ import NoteContext from "./noteContext";
 import { useRef } from "react";
 
 const NoteState = (props) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("auth-token");
   const host = "https://firest-backend.vercel.app";
   const notesInitial = []
   const [chechError, setchechError] = useState()
