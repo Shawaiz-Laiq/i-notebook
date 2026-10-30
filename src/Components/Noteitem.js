@@ -1,11 +1,15 @@
 import { useContext, useState } from "react"
 import noteContext from "../Context/noteContext"
+import SendNote from "./SendNote";
+
 
 
 function Notesitem(props) {
 
   const context = useContext(noteContext)
   const [viewNote, setViewNote] = useState(null);
+  const [sendNote, setSendNote] = useState(null);
+  
   const { delet, showAlert } = context
   const { note, updateNote, index } = props;
   const deleted = () => {
@@ -232,65 +236,75 @@ function Notesitem(props) {
   </span>
 
   {/* Buttons */}
-  <div
-    className="note-actions"
-    style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      flexWrap: "wrap",
-      gap: "8px",
-      maxWidth: "100%"
-    }}
-  >
+  
+<div
+  className="note-actions"
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "stretch",
+    flexWrap: "wrap",
+    gap: "8px",
+    width: "100%",
+    maxWidth: "100%",
+    boxSizing: "border-box"
+  }}
+>
+  {[
+    {
+      label: "Read Note",
+      onClick: () => setViewNote(note)
+    },
+    {
+      label: "Edit",
+      onClick: () => updateNote(note)
+    },
+    {
+      label: "Delete",
+      onClick: deleted
+    },
+    {
+      label: "Send",
+     onClick: () => setSendNote(note)
+    }
+  ].map((action) => (
     <button
-      onClick={() => setViewNote(note)}
+      key={action.label}
+      onClick={action.onClick}
       style={{
-        padding: "8px 14px",
+        flex: "1 1 120px",
+        minWidth: 0,
+        maxWidth: "100%",
+        padding: "8px 10px",
         border: "none",
         borderRadius: "8px",
         background: "#7c3aed",
         color: "white",
-        cursor: "pointer"
+        cursor: "pointer",
+        boxSizing: "border-box",
+        whiteSpace: "normal",
+        overflowWrap: "anywhere"
       }}
     >
-      Read Note
+      {action.label}
     </button>
+    
+  ))}
+</div>
 
-    <button
-      onClick={() => updateNote(note)}
-      style={{
-        padding: "8px 14px",
-        border: "none",
-        borderRadius: "8px",
-        background: "#7c3aed",
-        color: "white",
-        cursor: "pointer"
-      }}
-    >
-      Edit
-    </button>
-
-    <button
-      onClick={deleted}
-      style={{
-        padding: "8px 14px",
-        border: "none",
-        borderRadius: "8px",
-        background: "#7c3aed",
-        color: "white",
-        cursor: "pointer"
-      }}
-    >
-      Delete
-    </button>
-  </div>
 </div>
 
           </div>
         </div>
       </section>
     </div>
+     {/* Send Note Modal */}
+    {sendNote && (
+      <SendNote
+        note={sendNote}
+        onClose={() => setSendNote(null)}
+      />
+    )}
   </>
   )
 }

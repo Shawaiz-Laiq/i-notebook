@@ -92,42 +92,54 @@ function Login() {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      const response = await fetch(
-       "https://firest-backend.vercel.app/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({email :cerden.email, password: cerden.password})
-        }
-      );
-
-      const json = await response.json();
-           
-
-      if (response.ok && json.success === true && json.jwtdata) {
-        localStorage.setItem("token", json.jwtdata);
-        showAlert("Success", "Login successful!");
-        setInvalid(false);
-        navigate("/home");
-      } else {
-        showAlert("Warning", json.error || "Invalid email or password");
-        setInvalid(true);
-      }
-
-      
-      showAlert("Success", "Login successful!");
-
-      
-
-    } catch (error) {
-      showAlert("Warning", "Server se connection nahi ho raha");
-      setInvalid(true)
-    } finally {
-      setLoading(false);
+    
+try {
+  const response = await fetch(
+    "https://firest-backend.vercel.app/api/auth/login",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: cerden.email,
+        password: cerden.password
+      })
     }
+  );
+
+  const json = await response.json();
+
+  // Email verify nahi hai to verification page par bhejo
+  if (json.requiresVerification) {
+    showAlert("Warning", "Please verify your email first.");
+    navigate("/verify-email", {
+      state: { email: json.email || cerden.email }
+    });
+    return;
+  }
+
+  // Login successful
+  if (response.ok && json.success === true && json.jwtdata) {
+    localStorage.setItem("auth-token", json.jwtdata);
+    showAlert("Success", "Login successful!");
+    setInvalid(false);
+    navigate("/home");
+  } else {
+    showAlert(
+      "Warning",
+      json.message || json.error || "Invalid email or password"
+    );
+    setInvalid(true);
+  }
+
+} catch (error) {
+  showAlert("Warning", "Server se connection nahi ho raha");
+  setInvalid(true);
+} finally {
+  setLoading(false);
+}
+
   };
 
   const inputStyle = {
@@ -326,10 +338,9 @@ function Login() {
                 Remember me
               </label>
 
-              <span style={{ color: "#5368ed", cursor: "pointer" }} 
-              onClick={()=>{  forget === false? setforget(true) :setforget(false) }}>
+              <Link style={{ color: "#5368ed", cursor: "pointer" }} to="/forgot-password">
                 Forgot password?
-              </span>
+              </Link>
               
             </div>
             {forget === true &&<span style={{fontSize: ".8rem"}}>To change your password, please contact us at Shawaizlaiq20@gmail.com</span>}

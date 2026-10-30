@@ -7,7 +7,7 @@ function NavBar() {
 
   useEffect(() => {
     const handleSubmit = async () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("auth-token");
 
       if (!token) {
         setName("");
@@ -79,6 +79,22 @@ function NavBar() {
             to="/account"
           >
             Account
+          </Link>
+        </li>
+         <li className="nav-item">
+          <Link
+            className={`nav-link ${location.pathname === "/received" ? "active" : ""}`}
+            to="/received"
+          >
+            Received Notes
+          </Link>
+        </li>
+         <li className="nav-item">
+          <Link
+            className={`nav-link ${location.pathname === "/sentnotes" ? "active" : ""}`}
+            to="/sentnotes"
+          >
+            Sent Notes
           </Link>
         </li>
 
