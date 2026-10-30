@@ -41,65 +41,83 @@ function Signup() {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ 
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (credentials.password !== credentials.confirmPassword) {
-      showAlert("Warning", "Passwords do not match");
+  if (credentials.password !== credentials.confirmPassword) {
+    showAlert("Warning", "Passwords do not match");
+    setInvalid(true);
+    return;
+  }
+
+  setLoading(true);
+  setInvalName(false);
+  setInvalAccount(false);
+
+  try {
+    const response = await fetch(
+      "https://firest-backend.vercel.app/api/auth/createuser",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: credentials.name.trim(),
+          email: credentials.email.trim().toLowerCase(),
+          password: credentials.password
+        })
+      }
+    );
+
+    const json = await response.json();
+
+    if (!response.ok) {
+      if (
+        json.errors === "acoount already exists" ||
+        json.errors === "acoount already exists , This name is already taken"
+      ) {
+        setInvalAccount(true);
+      }
+
+      if (
+        json.errors === "This name is already taken" ||
+        json.errors === "acoount already exists , This name is already taken"
+      ) {
+        setInvalName(true);
+      }
+
+      showAlert(
+        "Warning",
+        typeof json.errors === "string"
+          ? json.errors
+          : json.error || "Signup failed"
+      );
       return;
     }
 
-    setLoading(true);
 
-    try {
-      const response = await fetch(
-        "https://firest-backend.vercel.app/api/auth/createuser",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            name: credentials.name,
-            email: credentials.email,
-            password: credentials.password
-          })
-        }
-      );
+    localStorage.removeItem("auth-token");
 
-      const json = await response.json();
-      if(json.errors === 'acoount already exists' )  {
-        setInvalAccount(true)
-        setInvalName(false)
+    showAlert(
+      "Success",
+      "Account created! Please check your email for the verification code."
+    );
+
+    navigate("/verify-email", {
+      state: {
+        email: credentials.email.trim().toLowerCase()
       }
-      if (json.errors === 'This name is already taken') {
-        setInvalName(true)
-        setInvalAccount(false)
-      } 
-      if (json.errors === 'acoount already exists , This name is already taken') {
-        setInvalName(true)
-        setInvalAccount(true)
-      }
+    });
 
-      if (!response.ok) {
-        showAlert("Warning", json.error || "Signup failed");
-        return;
-      }
+  } catch (error) {
+    showAlert("Warning", "Server se connection nahi ho raha");
+  } finally {
+    setLoading(false);
+  }
+};
 
-      const token = json.authtoken || json.jwtdata;
-
-      if (token) {
-        localStorage.setItem("token", json.jwtdata);
-      }
-
-      showAlert("Success", "Account created successfully!");
-      navigate(json.jwtdata ? "/home" : "/");
-    } catch (error) {
-      showAlert("Warning", "Server se connection nahi ho raha");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const inputStyle = {
     width: "100%",
