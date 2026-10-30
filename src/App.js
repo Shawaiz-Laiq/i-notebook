@@ -7,6 +7,11 @@ import Account from "./Components/Account";
 import Signup from './Components/singup';
 import AdminLogin from './Components/AdminLogin';
 import AdminDashboard from './Components/AdminDashboard';
+import VerifyEmail from "./Components/VerifyEmail";
+import ForgotPassword from "./Components/ForgotPassword";
+import NoteReceive from "./Components/NoteReceive";
+import ResetPassword from "./Components/ResetPassword";
+import NoteSendHistory from "./Components/NoteSendHistory";
 import {
   BrowserRouter as Router,
   Routes,
@@ -14,6 +19,7 @@ import {
 } from "react-router-dom"
 import NoteState from './Context/NoteState';
 import Alert from './Components/Alert';
+import Footer from './Components/footer';
 
 
 function App() {
@@ -30,6 +36,11 @@ function App() {
             <Route path="/about" element={<><NavBar /> <About/> </>} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/" element={<Login />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/received" element={<><NavBar /><NoteReceive /></>} />
+            <Route path="/sentnotes" element={<><NavBar /><NoteSendHistory /> <Footer/> </>}/>
           </Routes>
        
       </Router>

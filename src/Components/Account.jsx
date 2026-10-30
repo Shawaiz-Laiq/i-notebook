@@ -17,7 +17,7 @@ function Account() {
 
 useEffect(() => {
     const fetchAccount = async () => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("auth-token");
 
         if (!token) {
             setAccountLoading(false);
@@ -39,7 +39,7 @@ useEffect(() => {
             const json = await response.json();
 
             if (!response.ok) {
-                localStorage.removeItem("token");
+                localStorage.removeItem("auth-token");
                 navigate("/", { replace: true });
                 return;
             }
@@ -166,7 +166,7 @@ useEffect(() => {
                         </p>
                     </div>
                     <div
-                        onClick={() => { localStorage.removeItem("token"); window.location.href = "/"; }}
+                        onClick={() => { localStorage.removeItem("auth-token"); window.location.href = "/"; }}
                         style={{
                             display: "flex",
                             alignItems: "center",
@@ -195,7 +195,7 @@ useEffect(() => {
 
                             if (!confirmed) return;
 
-                            const token = localStorage.getItem("token");
+                            const token = localStorage.getItem("auth-token");
 
                             if (!token) {
                                 window.alert("Please log in first.");
@@ -205,7 +205,7 @@ useEffect(() => {
 
                             try {
                                 const response = await fetch(
-                                    "http://localhost:5000/api/auth/delete-account",
+                                    "https://firest-backend.vercel.app/api/auth/delete-account",
                                     {
                                         method: "DELETE",
                                         headers: {
@@ -223,7 +223,7 @@ useEffect(() => {
                                 }
 
                                 // Clear the logged-in user's token
-                                localStorage.removeItem("token");
+                                localStorage.removeItem("auth-token");
 
                                 window.alert("Your account has been deleted successfully.");
 

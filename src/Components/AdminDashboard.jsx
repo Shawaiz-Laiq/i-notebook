@@ -3,6 +3,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Admin.css';
 import Footer from './footer';
+import EmailHistory from './EmailHistory';
+import SendNotesHistory from "./SendNotesHistory";
 
 const API_BASE =
   process.env.REACT_APP_API_URL || 'https://firest-backend.vercel.app';
@@ -12,9 +14,11 @@ const sections = {
   users: 'Users',
   notes: 'Notes',
   reports: 'Reports',
-  totalusers: 'Totalusers',
+  totalusers: 'Total Users',
   totalnotes: 'Total Notes',
   deletedusers: 'Deleted Users',
+  emaildata: 'Email Data',
+  sendnote: "Send Notes",
 };
 
 
@@ -334,6 +338,26 @@ const restoreUser = async (id) => {
             ♙ &nbsp; Users
             {activeSection === 'users' && <i>•</i>}
           </button>
+          <button
+            type="button"
+            className={`admin-nav-item ${
+              activeSection === 'emaildata' ? 'selected' : ''
+            }`}
+            onClick={() => setActiveSection('emaildata')}
+          >
+            ⚑ &nbsp; Send Messages
+            {activeSection === 'emaildata' && <i>•</i>}
+          </button>
+          <button
+            type="button"
+            className={`admin-nav-item ${
+              activeSection === 'sendnote' ? 'selected' : ''
+            }`}
+            onClick={() => setActiveSection('sendnote')}
+          >
+            ⚑ &nbsp; Email Data
+            {activeSection === 'sendnote' && <i>•</i>}
+          </button>
 
           <button
             type="button"
@@ -388,6 +412,8 @@ const restoreUser = async (id) => {
            📊 &nbsp; Total Notes
             {activeSection === 'totalnotes' && <i>•</i>}
           </button>
+          
+           
         </nav>
 
         <div className="admin-sidebar-bottom">
@@ -1151,7 +1177,8 @@ const restoreUser = async (id) => {
   </table>
 </section>
 </>
-)}
+)} {activeSection === 'emaildata' && (<EmailHistory/>) }
+{activeSection === 'sendnote' && (<SendNotesHistory/>) }
 
           
 
