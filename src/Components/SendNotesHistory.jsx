@@ -115,8 +115,11 @@ export default function SendNotesHistory() {
         loadHistory(page);
     }, [page, loadHistory]);
 
-    const notes = data?.notes ?? [];
-    const attempts = attemptData?.attempts ?? [];
+    const notes = useMemo(() => data?.notes ?? [], [data]);
+   const attempts = useMemo(
+    () => attemptData?.attempts ?? [],
+    [attemptData]
+);
 
     const readCount = data?.totalRead ?? 0;
     const unreadCount = data?.totalUnread ?? 0;

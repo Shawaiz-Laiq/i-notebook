@@ -73,7 +73,7 @@ function Login() {
   });
 
   const [Invalid, setInvalid] = useState(false)
-  const [forget, setforget] = useState(false)
+  const [forget] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);

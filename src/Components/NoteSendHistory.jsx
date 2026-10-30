@@ -1,5 +1,5 @@
 
-import { useEffect, useState, useRef } from "react";
+import { useCallback ,useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 
@@ -23,37 +23,39 @@ export default function NoteSendHistory() {
   };
 
   // Fetch sent notes
-  const loadSent = async () => {
+  
+const loadSent = useCallback(async () => {
     const token = getToken();
 
     if (!token) {
-      navigate("/", { replace: true });
-      return;
+        navigate("/", { replace: true });
+        return;
     }
 
     try {
-      const res = await fetch(`${API}/api/sendnotes/sent`, {
-        method: "GET",
-        headers: {
-          "auth-token": token
+        const res = await fetch(`${API}/api/sendnotes/sent`, {
+            method: "GET",
+            headers: {
+                "auth-token": token
+            }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+            throw new Error(data.message || "Internal server error. Please wait.");
         }
-      });
 
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Internal server error. Please wait.");
-      }
-
-      setNotes(data.notes || []);
-      setError("");
+        setNotes(data.notes || []);
+        setError("");
 
     } catch (err) {
-      setError(err.message);
+        setError(err.message);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+}, [navigate]);
+
 
   // Initial load + auto refresh
   useEffect(() => {
@@ -64,7 +66,7 @@ export default function NoteSendHistory() {
     }, 60000);
 
     return () => clearInterval(interval);
-  }, []);
+  },  [loadSent]);
 
   // Group notes by receiver
   const grouped = notes.reduce((acc, note) => {

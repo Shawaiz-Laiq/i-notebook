@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./EmailHistory.css";
 
+
 const API_URL = "https://firest-backend.vercel.app/api/auth/admin/email-history";
 
 const formatDate = (date) => {
@@ -102,9 +103,8 @@ export default function EmailHistory() {
   useEffect(() => {
     loadEmailHistory(page);
   }, [page, loadEmailHistory]);
-
-  const emails = data?.emails ?? [];
-  const summary = data?.summary ?? [];
+const emails = useMemo(() => data?.emails ?? [], [data]);
+const summary = useMemo(() => data?.summary ?? [], [data]);
 
   const getCount = (type, status) =>
     summary.find(

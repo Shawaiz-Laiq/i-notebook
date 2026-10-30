@@ -6,7 +6,7 @@ function VerifyEmail() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState(location.state?.email || "");
+  const [email] = useState(location.state?.email || "");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");

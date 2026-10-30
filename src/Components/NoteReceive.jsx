@@ -1,5 +1,5 @@
 
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 import Footer from "./footer";
@@ -24,36 +24,41 @@ export default function NoteReceive() {
   };
 
   // Fetch received notes
-  const loadReceived = async () => {
-     const token = getToken();
-      if (!token) {
-    navigate("/", { replace: true });
-    return;
-  }
+  
+const loadReceived = useCallback(async () => {
+    const token = getToken();
+
+    if (!token) {
+        navigate("/", { replace: true });
+        return;
+    }
+
     try {
-      const res = await fetch(`${API}/api/sendnotes/received`, {
-        method: "GET",
-        headers: {
-          "auth-token": getToken()
+        const res = await fetch(`${API}/api/sendnotes/received`, {
+            method: "GET",
+            headers: {
+                "auth-token": token
+            }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+            throw new Error(
+                data.message || "Internal server error. Please wait."
+            );
         }
-      });
 
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Internal server error. Please wait.");
-        
-      }
-
-      setNotes(data.notes || []);
-      setError("");
+        setNotes(data.notes || []);
+        setError("");
 
     } catch (err) {
-      setError(err.message);
+        setError(err.message);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+}, [navigate]);
+
 
   // Load immediately and then every 1 minute
   useEffect(() => {
@@ -64,7 +69,7 @@ export default function NoteReceive() {
     }, 60000);
 
     return () => clearInterval(interval);
-  }, []);
+  },[loadReceived]);
 
   // Mark sender's notes as read in MongoDB
   const handleSelectSender = async (senderId) => {
