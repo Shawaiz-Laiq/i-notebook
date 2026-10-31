@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
@@ -11,22 +10,17 @@ export default function NoteSendHistory() {
   const [selectedReceiverId, setSelectedReceiverId] = useState(null);
   const [mobileChatOpen, setMobileChatOpen] = useState(false);
   const [error, setError] = useState("");
-
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
-
   const getToken = () => localStorage.getItem("auth-token");
-
   const getReceiverId = (receiver) => {
     return typeof receiver === "string"
       ? receiver
       : receiver?._id;
   };
-
   // Fetch sent notes
   const loadSent = useCallback(async () => {
     const token = getToken();
-
     if (!token) {
       navigate("/", { replace: true });
       return;

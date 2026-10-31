@@ -13,52 +13,52 @@ function Account() {
     const [date, setdate] = useState('')
     const [check, setcheck] = useState(false)
 
-   const [accountLoading, setAccountLoading] = useState(true);
+    const [accountLoading, setAccountLoading] = useState(true);
 
-useEffect(() => {
-    const fetchAccount = async () => {
-        const token = localStorage.getItem("auth-token");
+    useEffect(() => {
+        const fetchAccount = async () => {
+            const token = localStorage.getItem("auth-token");
 
-        if (!token) {
-            setAccountLoading(false);
-            navigate("/", { replace: true });
-            return;
-        }
-
-        try {
-            const response = await fetch(
-                "https://firest-backend.vercel.app/api/auth/getuser",
-                {
-                    method: "POST",
-                    headers: {
-                        "auth-token": token
-                    }
-                }
-            );
-
-            const json = await response.json();
-
-            if (!response.ok) {
-                localStorage.removeItem("auth-token");
+            if (!token) {
+                setAccountLoading(false);
                 navigate("/", { replace: true });
                 return;
             }
 
-            setname(json.name ?? "");
-            setemaila(json.email ?? "");
-            setdate(json.time ?? "");
-            setid(json._id ?? "");
-            setcheck(true);
+            try {
+                const response = await fetch(
+                    "https://firest-backend.vercel.app/api/auth/getuser",
+                    {
+                        method: "POST",
+                        headers: {
+                            "auth-token": token
+                        }
+                    }
+                );
 
-        } catch (error) {
-            console.error("Account fetch error:", error);
-        } finally {
-            setAccountLoading(false);
-        }
-    };
+                const json = await response.json();
 
-    fetchAccount();
-}, [navigate]);
+                if (!response.ok) {
+                    localStorage.removeItem("auth-token");
+                    navigate("/", { replace: true });
+                    return;
+                }
+
+                setname(json.name ?? "");
+                setemaila(json.email ?? "");
+                setdate(json.time ?? "");
+                setid(json._id ?? "");
+                setcheck(true);
+
+            } catch (error) {
+                console.error("Account fetch error:", error);
+            } finally {
+                setAccountLoading(false);
+            }
+        };
+
+        fetchAccount();
+    }, [navigate]);
 
     function formatMyDate(isoString) {
         const dateObj = new Date(isoString);
@@ -78,7 +78,7 @@ useEffect(() => {
 
     return (
         <>
-           {accountLoading || !check ? ( <Loading /> ): (<div style={{
+            {accountLoading || !check ? (<Loading />) : (<div style={{
                 minHeight: "100vh",
                 padding: "35px 16px",
                 background: "linear-gradient(135deg, #f5edff, #eef2ff)",

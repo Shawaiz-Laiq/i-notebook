@@ -1,4 +1,3 @@
-
 import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import NoteContext from "../Context/noteContext";
@@ -7,16 +6,12 @@ import Footer from "./footer";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-
   const { showAlert } = useContext(NoteContext);
   const navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     const cleanEmail = email.trim().toLowerCase();
-
     try {
       const response = await fetch(
         "https://firest-backend.vercel.app/api/auth/forgot-password",
@@ -30,8 +25,6 @@ function ForgotPassword() {
       );
 
       const json = await response.json();
-
-      console.log("Forgot password response:", response.status, json);
 
       if (!response.ok) {
         showAlert(
@@ -47,7 +40,6 @@ function ForgotPassword() {
         state: { email: cleanEmail }
       });
     } catch (error) {
-      console.error("Forgot password error:", error);
       showAlert("Warning", "Server se connection nahi ho raha.");
     } finally {
       setLoading(false);
@@ -270,7 +262,6 @@ function ForgotPassword() {
           </div>
         </div>
       </div>
-
       <Footer />
     </>
   );

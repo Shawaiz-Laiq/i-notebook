@@ -87,7 +87,7 @@ export default function SendNote({ note, onClose }) {
       }
 
       setSuccess(
-        `Note ${user.name || user.username || user.email || "user"} ko send ho gaya.`
+        `Note sent to ${user.name || user.username || user.email || "user"}`
       );
       setQuery("");
     } catch (err) {
@@ -103,7 +103,7 @@ export default function SendNote({ note, onClose }) {
   setSuccess("");
 
   if (!query.trim()) {
-    setError("User ID ya username enter karo.");
+    setError("Enter User ID or username");
     return;
   }
 
@@ -243,7 +243,7 @@ export default function SendNote({ note, onClose }) {
               color: "#374151"
             }}
           >
-            Enter unique ID or username
+            Enter unique ID or username or Email
           </label>
 
           <div style={{
@@ -255,7 +255,7 @@ export default function SendNote({ note, onClose }) {
               id="recipient"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="User ID or username"
+              placeholder="User ID or username or Email"
               style={{
                 flex: "1 1 180px",
                 minWidth: 0,

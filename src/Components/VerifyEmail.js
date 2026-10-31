@@ -5,13 +5,11 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 function VerifyEmail() {
   const location = useLocation();
   const navigate = useNavigate();
-
   const [email] = useState(location.state?.email || "");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -91,24 +89,24 @@ function VerifyEmail() {
 
         <label htmlFor="verify-email">Email address</label>
 
-<input
-  id="verify-email"
-  type="email"
-  value={email}
-  readOnly
-  autoComplete="email"
-  style={{
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "13px",
-    margin: "10px 0 20px",
-    border: "1px solid #d4dced",
-    borderRadius: "9px",
-    backgroundColor: "#f1f3f5",
-    color: "#555",
-    cursor: "not-allowed"
-  }}
-/>
+        <input
+          id="verify-email"
+          type="email"
+          value={email}
+          readOnly
+          autoComplete="email"
+          style={{
+            width: "100%",
+            boxSizing: "border-box",
+            padding: "13px",
+            margin: "10px 0 20px",
+            border: "1px solid #d4dced",
+            borderRadius: "9px",
+            backgroundColor: "#f1f3f5",
+            color: "#555",
+            cursor: "not-allowed"
+          }}
+        />
 
         <label htmlFor="verification-code">Verification code</label>
         <input

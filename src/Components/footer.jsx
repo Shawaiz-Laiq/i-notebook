@@ -12,7 +12,6 @@ function Footer() {
               Shawaiz
             </strong>
           </p>
-
           <p style={{ fontSize: "13px", margin: 0 }}>
             © {new Date().getFullYear()} Shawaiz. All rights reserved.
           </p>

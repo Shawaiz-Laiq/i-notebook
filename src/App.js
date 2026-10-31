@@ -23,26 +23,26 @@ import Footer from './Components/footer';
 
 
 function App() {
-  
+
 
   return (
     <NoteState>
-      <Router> 
-          <Routes>
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />          
-            <Route path="/home" element={ <><NavBar /> <Alert /> <Home /></>} />
-            <Route path="/account" element={<><NavBar /> <Account /> </>} />
-            <Route path="/about" element={<><NavBar /> <About/> </>} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/" element={<Login />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/received" element={<><NavBar /><NoteReceive /></>} />
-            <Route path="/sentnotes" element={<><NavBar /><NoteSendHistory /> <Footer/> </>}/>
-          </Routes>
-       
+      <Router>
+        <Routes>
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/home" element={<><NavBar /> <Alert /> <Home /></>} />
+          <Route path="/account" element={<><NavBar /> <Account /> </>} />
+          <Route path="/about" element={<><NavBar /> <About /> </>} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/received" element={<><NavBar /><NoteReceive /></>} />
+          <Route path="/sentnotes" element={<><NavBar /><NoteSendHistory /> <Footer /> </>} />
+        </Routes>
+
       </Router>
     </NoteState>
   );

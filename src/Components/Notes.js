@@ -6,12 +6,6 @@ import Noteitem from './Noteitem'
 function Notes() {
   const context = useContext(noteContext);
   const { notes, } = context
-  // useEffect(() => {
-  //   getNote()
-
-  // }, [getNote])
-
-
   const [title, settitle] = useState('')
   const [description, setdescription] = useState('')
   const [note, setnote] = useState({ id: "", etitle: "", edescription: "" })
@@ -19,13 +13,10 @@ function Notes() {
   const dialogRef = useRef(null);
   const { edit, showAlert } = context
   const updateNote = (currentNote) => {
-   // ref.current.click()
     setnote({ id: currentNote._id, etitle: currentNote.title, edescription: currentNote.description })
     dialogRef.current?.showModal();
     if (title.length >= 10 && description.length >= 10) {
       edit(note.etitle, note.edescription)
-      // showAlert("Success", "Note added successfully");
-
     } else {
       if (title.length < 10 && description.length < 10) {
         //showAlert("Warning", "Title and Description is too short");
@@ -39,11 +30,6 @@ function Notes() {
     }
 
   }
-  // const handelclick = () => {
-  //   edit(note.id, note.etitle, note.edescription)
-  //   refclose.current.click()
-  //    showAlert("Success", "Note Edited successfully");
-  // }
   const handelclick = async () => {
   await edit(note.id, note.etitle, note.edescription);
   dialogRef.current?.close();
@@ -67,7 +53,6 @@ function Notes() {
   note.description.toLowerCase().includes(search.toLowerCase())
 );
 
-
   return (<>
     <style>{`
         .custom-scroll::-webkit-scrollbar {
@@ -87,8 +72,7 @@ function Notes() {
           } 
         }
       `}</style>
-
-      
+   
     <div className="login-welcome-panel"
       style={{ width: "50vw" }}>
       {/* <span ref={ref} type="button" className="mx-3 btn-solid theme-primary" data-bs-toggle="dialog" data-bs-target="#exampleDialog">Edit</span> */}
@@ -306,7 +290,6 @@ function Notes() {
             fontSize: "clamp(20px, 2vw, 30px)",
             color: "#172344",
             margin: "0px, 10px, 0",
-
           }}
         >
           Your Notes
@@ -324,5 +307,5 @@ function Notes() {
     </div></>
   )
 }
-export default Notes
 
+export default Notes

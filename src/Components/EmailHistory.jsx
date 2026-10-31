@@ -1,17 +1,10 @@
-
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./EmailHistory.css";
-
-
 const API_URL = "https://firest-backend.vercel.app/api/auth/admin/email-history";
-
 const formatDate = (date) => {
   if (!date) return "—";
-
   const parsedDate = new Date(date);
-
   if (Number.isNaN(parsedDate.getTime())) return "—";
-
   return parsedDate.toLocaleString();
 };
 
@@ -40,14 +33,14 @@ const StatCard = ({ label, value, detail, icon, featured = false }) => {
     </article>
   );
 };
- const sectionStyle = {
-    background: '#fff',
-    border: '1px solid #e8eaf0',
-    borderRadius: '14px',
-    padding: '20px',
-    marginBottom: '24px',
-    overflowX: 'auto'
-  };
+const sectionStyle = {
+  background: '#fff',
+  border: '1px solid #e8eaf0',
+  borderRadius: '14px',
+  padding: '20px',
+  marginBottom: '24px',
+  overflowX: 'auto'
+};
 
 export default function EmailHistory() {
   const [data, setData] = useState(null);
@@ -103,8 +96,8 @@ export default function EmailHistory() {
   useEffect(() => {
     loadEmailHistory(page);
   }, [page, loadEmailHistory]);
-const emails = useMemo(() => data?.emails ?? [], [data]);
-const summary = useMemo(() => data?.summary ?? [], [data]);
+  const emails = useMemo(() => data?.emails ?? [], [data]);
+  const summary = useMemo(() => data?.summary ?? [], [data]);
 
   const getCount = (type, status) =>
     summary.find(
@@ -162,7 +155,7 @@ const summary = useMemo(() => data?.summary ?? [], [data]);
 
   return (
     <>
-       <section className="admin-welcome">
+      <section className="admin-welcome">
         <div>
           <p className="admin-kicker">WORKSPACE ACTIVITY</p>
           <h1>
@@ -224,268 +217,266 @@ const summary = useMemo(() => data?.summary ?? [], [data]);
         />
       </section>
       <div className="notes-slider">
-  <div className="notes-slider-header">
-    <span>Email Analytics</span>
+        <div className="notes-slider-header">
+          <span>Email Analytics</span>
 
-    <div className="notes-slider-controls">
-      <button
-        type="button"
-        onClick={() => setNotesSlide(0)}
-        disabled={notesSlide === 0}
-        aria-label="Previous notes analytics"
-      >
-        ←
-      </button>
+          <div className="notes-slider-controls">
+            <button
+              type="button"
+              onClick={() => setNotesSlide(0)}
+              disabled={notesSlide === 0}
+              aria-label="Previous notes analytics"
+            >
+              ←
+            </button>
 
-      <span>{notesSlide + 1} / 2</span>
+            <span>{notesSlide + 1} / 2</span>
 
-      <button
-        type="button"
-        onClick={() => setNotesSlide(1)}
-        disabled={notesSlide === 1}
-        aria-label="Next notes analytics"
-      >
-        →
-      </button>
-    </div>
-  </div>
-
-  <div className="notes-slider-window">
-    <div
-      className="notes-slider-track"
-      style={{
-        transform: `translateX(-${notesSlide * 100}%)`
-      }}
-    >
-      
-
-      <section style={sectionStyle}>
-        <div>
-          <div>
-            <p className="admin-kicker">DELIVERY BREAKDOWN</p>
-            <h2>Email performance</h2>
+            <button
+              type="button"
+              onClick={() => setNotesSlide(1)}
+              disabled={notesSlide === 1}
+              aria-label="Next notes analytics"
+            >
+              →
+            </button>
           </div>
-          <span className="email-live-label">
-            <span /> Database records
-          </span>
         </div>
 
-        <div className="email-breakdown-grid">
-          {["verification", "password-reset"].map((type) => {
-            const sent = getCount(type, "sent");
-            const failed = getCount(type, "failed");
-            const total = sent + failed;
-            const percent = total ? Math.round((sent / total) * 100) : 0;
-
-            return (
-              <article className="email-breakdown-card" key={type}>
-                <div className="email-breakdown-title">
-                  <span className="email-breakdown-icon">
-                    {type === "verification" ? "✓" : "↻"}
-                  </span>
-                  <div>
-                    <h3>
-                      {type === "verification"
-                        ? "Verification emails"
-                        : "Password-reset emails"}
-                    </h3>
-                    <p>{total} recorded attempts</p>
-                  </div>
-                </div>
-
-                <div className="email-progress">
-                  <div style={{ width: `${percent}%` }} />
-                </div>
-
-                <div className="email-breakdown-numbers">
-                  <span>Sent <strong>{sent}</strong></span>
-                  <span>Failed <strong>{failed}</strong></span>
-                  <span><strong>{percent}%</strong> sent</span>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section style={sectionStyle}>
-        <div >
-          <div>
-            <p className="admin-kicker">ACTIVITY LOG</p>
-            <h2>Email delivery history</h2>
-            <p className="email-panel-description">
-              Review each attempt, associated user and any delivery error.
-            </p>
-          </div>
-          <span className="email-record-count">
-            {data?.totalEmails ?? 0} total records
-          </span>
-        </div>
-
-        <div className="email-filters">
-          <div className="email-search">
-            <span>⌕</span>
-            <input
-              type="search"
-              placeholder="Search name, email or error..."
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              aria-label="Search email history"
-            />
-          </div>
-
-          <select
-            value={statusFilter}
-            onChange={(event) => setStatusFilter(event.target.value)}
-            aria-label="Filter by status"
+        <div className="notes-slider-window">
+          <div
+            className="notes-slider-track"
+            style={{
+              transform: `translateX(-${notesSlide * 100}%)`
+            }}
           >
-            <option value="all">All statuses</option>
-            <option value="sent">Sent</option>
-            <option value="failed">Failed</option>
-          </select>
+            <section style={sectionStyle}>
+              <div>
+                <div>
+                  <p className="admin-kicker">DELIVERY BREAKDOWN</p>
+                  <h2>Email performance</h2>
+                </div>
+                <span className="email-live-label">
+                  <span /> Database records
+                </span>
+              </div>
 
-          <select
-            value={typeFilter}
-            onChange={(event) => setTypeFilter(event.target.value)}
-            aria-label="Filter by email type"
-          >
-            <option value="all">All email types</option>
-            <option value="verification">Verification</option>
-            <option value="password-reset">Password reset</option>
-          </select>
-        </div>
+              <div className="email-breakdown-grid">
+                {["verification", "password-reset"].map((type) => {
+                  const sent = getCount(type, "sent");
+                  const failed = getCount(type, "failed");
+                  const total = sent + failed;
+                  const percent = total ? Math.round((sent / total) * 100) : 0;
 
-        <div className="email-table-wrap">
-          <table className="email-table">
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Email address</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Attempts on this page</th>
-                <th>Date &amp; time</th>
-                <th>Error details</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {loading && !data ? (
-                <tr>
-                  <td colSpan="7" className="email-empty">
-                    Loading email history...
-                  </td>
-                </tr>
-              ) : filteredEmails.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="email-empty">
-                    {error
-                      ? "Email records could not be loaded."
-                      : "No matching email records found."}
-                  </td>
-                </tr>
-              ) : (
-                filteredEmails.map((item) => (
-                  <tr key={item._id}>
-                    <td>
-                      <div className="email-user">
-                        <span className="email-avatar">
-                          {(item.userId?.name || item.email || "?")
-                            .charAt(0)
-                            .toUpperCase()}
+                  return (
+                    <article className="email-breakdown-card" key={type}>
+                      <div className="email-breakdown-title">
+                        <span className="email-breakdown-icon">
+                          {type === "verification" ? "✓" : "↻"}
                         </span>
                         <div>
-                          <strong>{item.userId?.name || "Unknown user"}</strong>
-                          <small>
-                            {item.userId?._id
-                              ? `ID: ${item.userId._id.slice(-8)}`
-                              : "User ID unavailable"}
-                          </small>
+                          <h3>
+                            {type === "verification"
+                              ? "Verification emails"
+                              : "Password-reset emails"}
+                          </h3>
+                          <p>{total} recorded attempts</p>
                         </div>
                       </div>
-                    </td>
 
-                    <td className="email-address">
-                      {item.email || "—"}
-                    </td>
+                      <div className="email-progress">
+                        <div style={{ width: `${percent}%` }} />
+                      </div>
 
-                    <td>
-                      <span className={`email-type-badge ${item.type}`}>
-                        {item.type === "password-reset"
-                          ? "Password reset"
-                          : item.type === "verification"
-                            ? "Verification"
-                            : item.type || "Unknown"}
-                      </span>
-                    </td>
+                      <div className="email-breakdown-numbers">
+                        <span>Sent <strong>{sent}</strong></span>
+                        <span>Failed <strong>{failed}</strong></span>
+                        <span><strong>{percent}%</strong> sent</span>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
 
-                    <td>
-                      <span className={`email-status ${item.status}`}>
-                        <span />
-                        {item.status || "Unknown"}
-                      </span>
-                    </td>
+            <section style={sectionStyle}>
+              <div >
+                <div>
+                  <p className="admin-kicker">ACTIVITY LOG</p>
+                  <h2>Email delivery history</h2>
+                  <p className="email-panel-description">
+                    Review each attempt, associated user and any delivery error.
+                  </p>
+                </div>
+                <span className="email-record-count">
+                  {data?.totalEmails ?? 0} total records
+                </span>
+              </div>
 
-                    <td className="email-attempt-number">
-                      {attemptsByEmail[(item.email || "").toLowerCase()] ?? 1}
-                    </td>
+              <div className="email-filters">
+                <div className="email-search">
+                  <span>⌕</span>
+                  <input
+                    type="search"
+                    placeholder="Search name, email or error..."
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
+                    aria-label="Search email history"
+                  />
+                </div>
 
-                    <td className="email-date">
-                      {formatDate(item.sentAt || item.createdAt)}
-                    </td>
+                <select
+                  value={statusFilter}
+                  onChange={(event) => setStatusFilter(event.target.value)}
+                  aria-label="Filter by status"
+                >
+                  <option value="all">All statuses</option>
+                  <option value="sent">Sent</option>
+                  <option value="failed">Failed</option>
+                </select>
 
-                    <td className="email-error-cell">
-                      {item.error ? (
-                        <span title={getErrorMessage(item.error)}>
-                          {getErrorMessage(item.error)}
-                        </span>
-                      ) : (
-                        <span className="email-no-error">No error</span>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                <select
+                  value={typeFilter}
+                  onChange={(event) => setTypeFilter(event.target.value)}
+                  aria-label="Filter by email type"
+                >
+                  <option value="all">All email types</option>
+                  <option value="verification">Verification</option>
+                  <option value="password-reset">Password reset</option>
+                </select>
+              </div>
 
-        <div className="email-pagination">
-          <p>
-            Page <strong>{data?.page ?? page}</strong> of{" "}
-            <strong>{totalPages}</strong>
-          </p>
+              <div className="email-table-wrap">
+                <table className="email-table">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Email address</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th>Attempts on this page</th>
+                      <th>Date &amp; time</th>
+                      <th>Error details</th>
+                    </tr>
+                  </thead>
 
-          <div>
-            <button
-              type="button"
-              onClick={() => setPage((current) => Math.max(1, current - 1))}
-              disabled={loading || page <= 1}
-            >
-              ← Previous
-            </button>
+                  <tbody>
+                    {loading && !data ? (
+                      <tr>
+                        <td colSpan="7" className="email-empty">
+                          Loading email history...
+                        </td>
+                      </tr>
+                    ) : filteredEmails.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" className="email-empty">
+                          {error
+                            ? "Email records could not be loaded."
+                            : "No matching email records found."}
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredEmails.map((item) => (
+                        <tr key={item._id}>
+                          <td>
+                            <div className="email-user">
+                              <span className="email-avatar">
+                                {(item.userId?.name || item.email || "?")
+                                  .charAt(0)
+                                  .toUpperCase()}
+                              </span>
+                              <div>
+                                <strong>{item.userId?.name || "Unknown user"}</strong>
+                                <small>
+                                  {item.userId?._id
+                                    ? `ID: ${item.userId._id.slice(-8)}`
+                                    : "User ID unavailable"}
+                                </small>
+                              </div>
+                            </div>
+                          </td>
 
-            <button
-              type="button"
-              onClick={() =>
-                setPage((current) => Math.min(totalPages, current + 1))
-              }
-              disabled={loading || page >= totalPages}
-            >
-              Next →
-            </button>
+                          <td className="email-address">
+                            {item.email || "—"}
+                          </td>
+
+                          <td>
+                            <span className={`email-type-badge ${item.type}`}>
+                              {item.type === "password-reset"
+                                ? "Password reset"
+                                : item.type === "verification"
+                                  ? "Verification"
+                                  : item.type || "Unknown"}
+                            </span>
+                          </td>
+
+                          <td>
+                            <span className={`email-status ${item.status}`}>
+                              <span />
+                              {item.status || "Unknown"}
+                            </span>
+                          </td>
+
+                          <td className="email-attempt-number">
+                            {attemptsByEmail[(item.email || "").toLowerCase()] ?? 1}
+                          </td>
+
+                          <td className="email-date">
+                            {formatDate(item.sentAt || item.createdAt)}
+                          </td>
+
+                          <td className="email-error-cell">
+                            {item.error ? (
+                              <span title={getErrorMessage(item.error)}>
+                                {getErrorMessage(item.error)}
+                              </span>
+                            ) : (
+                              <span className="email-no-error">No error</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="email-pagination">
+                <p>
+                  Page <strong>{data?.page ?? page}</strong> of{" "}
+                  <strong>{totalPages}</strong>
+                </p>
+
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setPage((current) => Math.max(1, current - 1))}
+                    disabled={loading || page <= 1}
+                  >
+                    ← Previous
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPage((current) => Math.min(totalPages, current + 1))
+                    }
+                    disabled={loading || page >= totalPages}
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+
+              <p className="email-footnote">
+                Note: “Sent” means the mail server accepted the message, not
+                necessarily that it reached the recipient’s inbox. Attempt counts
+                shown here are for the currently loaded page.
+              </p>
+            </section>
           </div>
         </div>
-
-        <p className="email-footnote">
-          Note: “Sent” means the mail server accepted the message, not
-          necessarily that it reached the recipient’s inbox. Attempt counts
-          shown here are for the currently loaded page.
-        </p>
-      </section>
       </div>
-  </div>
-</div>
     </>
   );
 }

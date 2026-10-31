@@ -2,14 +2,11 @@ import { useContext, useState } from "react"
 import noteContext from "../Context/noteContext"
 import SendNote from "./SendNote";
 
-
-
 function Notesitem(props) {
 
   const context = useContext(noteContext)
   const [viewNote, setViewNote] = useState(null);
   const [sendNote, setSendNote] = useState(null);
-  
   const { delet, showAlert } = context
   const { note, updateNote, index } = props;
   const deleted = () => {
@@ -19,33 +16,29 @@ function Notesitem(props) {
 
   function formatMyDate(isoString) {
     const dateObj = new Date(isoString);
-
-
     const date = dateObj.toLocaleDateString('en-CA');
-
     let hours = dateObj.getHours();
     const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-
     hours = hours % 12;
     hours = hours ? hours : 12;
-
     return `${date} At ${hours}:${minutes}`;
   }
+
   const incomingData = note.time
-
   const noteColors = [
-  "#E2F5E9", // 1. Light Green
-  "#FFE8DC", // 2. Light Peach
-  "#E2EEFF", // 3. Light Blue
-  "#FFE4EF", // 4. Light Pink
-  "#EEE7FF", // 5. Light Lavender
-  "#FFF5CC"  // 6. Light Yellow
-];
+    "#E2F5E9", // 1. Light Green
+    "#FFE8DC", // 2. Light Peach
+    "#E2EEFF", // 3. Light Blue
+    "#FFE4EF", // 4. Light Pink
+    "#EEE7FF", // 5. Light Lavender
+    "#FFF5CC"  // 6. Light Yellow
+  ];
+
+  const copytext = () => {
+    const textToCopy = ` ${viewNote.title}: \n  ${viewNote.description}`;
+    navigator.clipboard.writeText(textToCopy)
+  }
   return (<>
-
-
-    {/* View button */}
-
 
     {/* View Note Modal */}
     {viewNote && (
@@ -180,6 +173,7 @@ function Notesitem(props) {
           <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "24px" }}>
             <button
               onClick={() => setViewNote(null)}
+              className="mx-3"
               style={{
                 padding: "11px 22px",
                 border: "none",
@@ -192,18 +186,26 @@ function Notesitem(props) {
             >
               Done
             </button>
+            <button
+              onClick={() => copytext()}
+              style={{
+                padding: "11px 22px",
+                border: "none",
+                borderRadius: "10px",
+                background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                color: "#fff",
+                fontWeight: 600,
+                cursor: "pointer"
+              }}
+            >
+              Copy
+            </button>
           </div>
         </div>
       </div>
     )}
 
-
-
-
-
-
     <div className="d-flex justify-content-center" style={{ paddingRight: "2px" }}>
-
       <section className="card my-3" style={{
         maxWidth: "750px",
         whiteSpace: "nowrap",
@@ -219,92 +221,86 @@ function Notesitem(props) {
           {/* <p className="card-text">{note.description}</p> */}
           <p className="card-text">{note.description}</p>
           <div className="d-flex  justify-content-between">
-            
-<div
-  className="d-flex justify-content-between align-items-center flex-wrap gap-3"
-  style={{ width: "100%" }}
->
-  {/* Date */}
-  <span
-    style={{
-      fontSize: "12px",
-      marginTop: "5px",
-      overflowWrap: "anywhere"
-    }}
-  >
-    {formatMyDate(incomingData)}
-  </span>
+            <div
+              className="d-flex justify-content-between align-items-center flex-wrap gap-3"
+              style={{ width: "100%" }}
+            >
+              {/* Date */}
+              <span
+                style={{
+                  fontSize: "12px",
+                  marginTop: "5px",
+                  overflowWrap: "anywhere"
+                }}
+              >
+                {formatMyDate(incomingData)}
+              </span>
 
-  {/* Buttons */}
-  
-<div
-  className="note-actions"
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "stretch",
-    flexWrap: "wrap",
-    gap: "8px",
-    width: "100%",
-    maxWidth: "100%",
-    boxSizing: "border-box"
-  }}
->
-  {[
-    {
-      label: "Read Note",
-      onClick: () => setViewNote(note)
-    },
-    {
-      label: "Edit",
-      onClick: () => updateNote(note)
-    },
-    {
-      label: "Delete",
-      onClick: deleted
-    },
-    {
-      label: "Send",
-     onClick: () => setSendNote(note)
-    }
-  ].map((action) => (
-    <button
-      key={action.label}
-      onClick={action.onClick}
-      style={{
-        flex: "1 1 120px",
-        minWidth: 0,
-        maxWidth: "100%",
-        padding: "8px 10px",
-        border: "none",
-        borderRadius: "8px",
-        background: "#7c3aed",
-        color: "white",
-        cursor: "pointer",
-        boxSizing: "border-box",
-        whiteSpace: "normal",
-        overflowWrap: "anywhere"
-      }}
-    >
-      {action.label}
-    </button>
-    
-  ))}
-</div>
+              {/* Buttons */}
 
-</div>
-
+              <div
+                className="note-actions"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "stretch",
+                  flexWrap: "wrap",
+                  gap: "8px",
+                  width: "100%",
+                  maxWidth: "100%",
+                  boxSizing: "border-box"
+                }}
+              >
+                {[
+                  {
+                    label: "Read Note",
+                    onClick: () => setViewNote(note)
+                  },
+                  {
+                    label: "Edit",
+                    onClick: () => updateNote(note)
+                  },
+                  {
+                    label: "Delete",
+                    onClick: deleted
+                  },
+                  {
+                    label: "Send",
+                    onClick: () => setSendNote(note)
+                  }
+                ].map((action) => (
+                  <button
+                    key={action.label}
+                    onClick={action.onClick}
+                    style={{
+                      flex: "1 1 120px",
+                      minWidth: 0,
+                      maxWidth: "100%",
+                      padding: "8px 10px",
+                      border: "none",
+                      borderRadius: "8px",
+                      background: "#7c3aed",
+                      color: "white",
+                      cursor: "pointer",
+                      boxSizing: "border-box",
+                      whiteSpace: "normal",
+                      overflowWrap: "anywhere"
+                    }}
+                  >
+                    {action.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
     </div>
-     {/* Send Note Modal */}
+    {/* Send Note Modal */}
     {sendNote && (
       <SendNote
         note={sendNote}
-        onClose={() => setSendNote(null)}
-      />
-    )}
+        onClose={() => setSendNote(null)}/>)}
   </>
   )
 }

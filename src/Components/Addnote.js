@@ -1,68 +1,3 @@
-// import { useContext, useState } from "react";
-// import noteContext from "../Context/noteContext";
-
-// function Addnote() {
-//     const [note, setnote] = useState({ title: "", description: "" })
-//     const [title, settitle] = useState('')
-//     const [description, setdescription] = useState('')
-//     const context = useContext(noteContext);
-//     const { addNote, showAlert } = context
-//     const handleclick = (e) => {
-//         e.preventDefault();
-//         if (title.length >= 10 && description.length >= 10) {
-//             addNote(note.title, note.description)
-//             showAlert("Success", "Note added successfully");
-//             const token = localStorage.getItem("token");
-//         } else {
-//             if (title.length < 10 && description.length < 10) {
-//                  showAlert("Warning", "Title and Description is too short");
-//             } else {
-//                 if (title.length < 10) {
-//                     showAlert("Warning", "Title is too short");
-//                 } else if (description.length  < 10) {
-//                     showAlert("Warning", "Description is too short");
-//                 }
-//             }
-//         }
-
-//     }
-
-//     const titleclick = (e) => {
-//         settitle(e.target.value)
-//     }
-//     const desclick = (e) => {
-//         setdescription(e.target.value)
-//     }
-
-//     const onchange = (e) => {
-//         setnote({ ...note, [e.target.name]: e.target.value })
-
-//     }
-//     return (
-//         <div>
-//             <h2>Add A Note</h2>
-//             <form style={{ width: "300px" }}>
-//                 <div className="mb-3">
-//                     <label htmlFor="title" className="form-label">title</label>
-//                     <input onChange={(e) => { onchange(e); titleclick(e) }} name="title" type="text" className="form-control" id="title" aria-describedby="emailHelp" required />
-//                 </div>
-//                 <div className="mb-3">
-//                     <label htmlFor="description" className="form-label">Description</label>
-//                     <input onChange={(e) => { onchange(e); desclick(e) }} name="description" type="description" className="form-control" id="description" required />
-//                 </div>
-//                 <button type="submit" className="btn-solid theme-primary" onClick={handleclick}>Add Note</button>
-//             </form>
-//         </div>
-//     )
-// }
-
-// export default Addnote;
-
-
-
-
-
-
 import { useState, useContext } from "react";
 import NoteContext from "../Context/noteContext";
 
@@ -107,7 +42,7 @@ function Addnote() {
         description: "",
         tag: "General"
       });
-        //addNote(note.title, note.description)
+      //addNote(note.title, note.description)
 
       showAlert("Success", "Note added successfully!");
     } catch (error) {
@@ -134,11 +69,11 @@ function Addnote() {
     marginBottom: "9px",
     fontWeight: "600",
     color: "#263453",
-    fontSize : "15px"
+    fontSize: "15px"
   };
 
   return (<>
-  <style>{`
+    <style>{`
         @media (max-width: 900px) {
           .login-welcome-panel {
             width: 100vw !important;
@@ -149,7 +84,7 @@ function Addnote() {
       `}</style>
     <div className="login-welcome-panel"
       style={{
-       
+
         padding: "35px 15px",
         background: "#f4f6fc",
         fontFamily: "Arial, sans-serif",
@@ -189,7 +124,7 @@ function Addnote() {
             Create a New Note
           </h1>
 
-          <p style={{ color: "#687795", lineHeight: 1.2, margin: 0 , fontSize: ".8rem"}}>
+          <p style={{ color: "#687795", lineHeight: 1.2, margin: 0, fontSize: ".8rem" }}>
             Capture your ideas, save your thoughts, and keep everything organized.
           </p>
         </div>
@@ -252,7 +187,7 @@ function Addnote() {
                 style={{
                   ...fieldStyle,
                   resize: "vertical",
-                 // lineHeight: 1.7,
+                  // lineHeight: 1.7,
                   //minHeight: "150px"
                 }}
               />
@@ -269,7 +204,7 @@ function Addnote() {
               </p>
             </div>
 
-            <div style={{ marginBottom: "28px" }}>
+            {/* <div style={{ marginBottom: "28px" }}>
               <label htmlFor="tag" style={labelStyle}>
                 Category
               </label>
@@ -287,7 +222,7 @@ function Addnote() {
                 <option value="Personal">Personal</option>
                 <option value="Ideas">Ideas</option>
               </select>
-            </div>
+            </div> */}
 
             <div
               style={{

@@ -1,4 +1,3 @@
-
 import Footer from "./footer";
 
 function About() {

@@ -13,11 +13,8 @@ export default function NoteReceive() {
   const [selectedSenderId, setSelectedSenderId] = useState(null);
   const [mobileChatOpen, setMobileChatOpen] = useState(false);
   const [error, setError] = useState("");
-
   const messagesEndRef = useRef(null);
-
   const getToken = () => localStorage.getItem("auth-token");
-
   const getSenderId = (sender) => {
     return typeof sender === "string" ? sender : sender?._id;
   };
@@ -25,12 +22,10 @@ export default function NoteReceive() {
   // Fetch received notes
   const loadReceived = useCallback(async () => {
     const token = getToken();
-
     if (!token) {
       navigate("/", { replace: true });
       return;
     }
-
     try {
       const res = await fetch(`${API}/api/sendnotes/received`, {
         method: "GET",
@@ -40,13 +35,11 @@ export default function NoteReceive() {
       });
 
       const data = await res.json();
-
       if (!res.ok || !data.success) {
         throw new Error(
           data.message || "Internal server error. Please wait."
         );
       }
-
       setNotes(data.notes || []);
       setError("");
 
@@ -60,11 +53,9 @@ export default function NoteReceive() {
   // Initial load + auto refresh
   useEffect(() => {
     loadReceived();
-
     const interval = setInterval(() => {
       loadReceived();
     }, 60000);
-
     return () => clearInterval(interval);
   }, [loadReceived]);
 
@@ -74,7 +65,6 @@ export default function NoteReceive() {
       navigate("/", { replace: true });
       return;
     }
-
     setSelectedSenderId(senderId);
     setMobileChatOpen(true);
 
@@ -107,7 +97,6 @@ export default function NoteReceive() {
       );
 
     } catch (err) {
-      console.error("Read status error:", err);
       setError(err.message);
     }
   };
@@ -350,14 +339,12 @@ export default function NoteReceive() {
       `}</style>
 
       <div
-        className={`receive-history-container ${
-          mobileChatOpen ? "mobile-chat-open" : ""
-        }`}
+        className={`receive-history-container ${mobileChatOpen ? "mobile-chat-open" : ""
+          }`}
       >
 
         {/* LEFT SIDEBAR */}
         <div className="receive-history-sidebar">
-
           <div style={{
             padding: "16px",
             background: "#f0f2f5",
@@ -369,7 +356,6 @@ export default function NoteReceive() {
           }}>
             Received Notes
           </div>
-
           <div className="receive-history-list">
 
             {error ? (

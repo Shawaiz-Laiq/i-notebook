@@ -24,29 +24,18 @@ function NavBar() {
             }
           }
         );
-
-        // Pehle response ko text mein read karo
         const text = await response.text();
-
-        // Check karo ke backend JSON bhej raha hai
         let json;
-
         try {
           json = JSON.parse(text);
         } catch {
-          console.error("Backend ne JSON ke bajaye ye response diya:", text);
+         return;
+        }
+        if (!response.ok) {       
           return;
         }
-
-        if (!response.ok) {
-          console.error("Failed to fetch user:", json);
-          return;
-        }
-
         setName(json.name ?? "");
-      } catch (error) {
-        console.error("Something went wrong:", error);
-      }
+      } catch (error) {       }
     };
 
     handleSubmit();
@@ -81,7 +70,7 @@ function NavBar() {
             Account
           </Link>
         </li>
-         <li className="nav-item">
+        <li className="nav-item">
           <Link
             className={`nav-link ${location.pathname === "/received" ? "active" : ""}`}
             to="/received"
@@ -89,7 +78,7 @@ function NavBar() {
             Received Notes
           </Link>
         </li>
-         <li className="nav-item">
+        <li className="nav-item">
           <Link
             className={`nav-link ${location.pathname === "/sentnotes" ? "active" : ""}`}
             to="/sentnotes"
@@ -107,5 +96,4 @@ function NavBar() {
     </>
   );
 }
-
 export default NavBar;
