@@ -9,10 +9,14 @@ function Notesitem(props) {
   const [sendNote, setSendNote] = useState(null);
   const { delet, showAlert } = context
   const { note, updateNote, index } = props;
-  const deleted = () => {
-    showAlert("Success", "Note added successfully")
-    delet(note._id);
-  }
+  const deleted = async () => {
+    try {
+      await delet(note._id);
+      showAlert("Note deleted successfully", "Success");
+    } catch (error) {
+      showAlert(error.message, "Error");
+    }
+  };
 
   function formatMyDate(isoString) {
     const dateObj = new Date(isoString);
@@ -300,7 +304,7 @@ function Notesitem(props) {
     {sendNote && (
       <SendNote
         note={sendNote}
-        onClose={() => setSendNote(null)}/>)}
+        onClose={() => setSendNote(null)} />)}
   </>
   )
 }

@@ -69,6 +69,39 @@ export default function AdminDashboard() {
     localStorage.removeItem('admin-auth-token');
     navigate('/admin/login', { replace: true });
   }, [navigate]);
+  const [history, setHistory] = useState([]);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const token = localStorage.getItem('admin-auth-token');
+
+        const response = await fetch(
+          `https://firest-backend.vercel.app/api/auth/admin/notehistory`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token": token
+            }
+          }
+        );
+
+        const json = await response.json();
+
+        if (!response.ok) {
+          throw new Error(json.error || "Failed to fetch history");
+        }
+
+        setHistory(json);
+
+      } catch (error) {
+        console.error("History error:", error);
+      }
+    };
+
+    fetchHistory();
+  }, []);
 
   const loadStats = useCallback(async () => {
     const token = localStorage.getItem('admin-auth-token');
@@ -218,7 +251,7 @@ export default function AdminDashboard() {
   const onlineUsers = stats?.onlineUsers ?? 0;
   const loginEvents = stats?.loginEvents24h ?? 0;
   const uniqueUsers = stats?.recentLogins.length
- 
+
 
   const loginCounts = stats?.loginCountsByUser ?? [];
   const recentLogins = stats?.recentLogins ?? [];
@@ -234,7 +267,8 @@ export default function AdminDashboard() {
     padding: '13px 12px',
     textAlign: 'left',
     borderBottom: '1px solid #e8eaf0',
-    fontSize: '13px'
+    fontSize: '13px',
+    width: "5px"
   };
 
   const sectionStyle = {
@@ -1078,67 +1112,160 @@ export default function AdminDashboard() {
                 icon="⌫"
               />
             </section>
+            <div className="notes-slider">
+              <div className="notes-slider-header">
+                <span>Notes Analytics</span>
 
-            <section style={sectionStyle}>
+                <div className="notes-slider-controls">
+                  <button
+                    type="button"
+                    onClick={() => setNotesSlide(0)}
+                    disabled={notesSlide === 0}
+                    aria-label="Previous notes analytics"
+                  >
+                    ←
+                  </button>
 
-              <table style={tableStyle}>
-                <thead>
-                  <tr>
-                    <th style={cellStyle}>#</th>
-                    <th style={cellStyle}>Title</th>
-                    <th style={cellStyle}>Username</th>
-                    <th style={cellStyle}>Created Date</th>
-                    <th style={cellStyle}>Deleted Date</th>
-                    <th style={cellStyle}>Status</th>
-                  </tr>
-                </thead>
+                  <span>{notesSlide + 1} / 2</span>
 
-                <tbody>
-                  {!notesHistory ? (
-                    renderTableMessage('Loading notes history...', 6)
-                  ) : notesHistory.notes.length === 0 ? (
-                    renderTableMessage('No notes history found.', 6)
-                  ) : (
-                    notesHistory.notes.map((note, index) => (
-                      <tr key={note.id}>
-                        <td style={cellStyle}>{index + 1}</td>
+                  <button
+                    type="button"
+                    onClick={() => setNotesSlide(1)}
+                    disabled={notesSlide === 1}
+                    aria-label="Next notes analytics"
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
 
-                        <td style={cellStyle}>
-                          <strong>{note.title || 'Untitled'}</strong>
-                        </td>
+              <div className="notes-slider-window">
+                <div
+                  className="notes-slider-track"
+                  style={{
+                    transform: `translateX(-${notesSlide * 100}%)`
+                  }}
+                >
 
-                        <td style={cellStyle}>
-                          {note.username || 'Unknown'}
-                        </td>
+                  <section style={sectionStyle}>
 
-                        <td style={cellStyle}>
-                          {note.createdAt
-                            ? new Date(note.createdAt).toLocaleString()
-                            : '—'}
-                        </td>
 
-                        <td style={cellStyle}>
-                          {note.deletedAt
-                            ? new Date(note.deletedAt).toLocaleString()
-                            : '—'}
-                        </td>
 
-                        <td style={cellStyle}>
-                          <span
-                            style={{
-                              color: note.status === 'active' ? 'green' : 'red',
-                              fontWeight: 'bold'
-                            }}
-                          >
-                            {note.status === 'active' ? 'Active' : 'Deleted'}
-                          </span>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </section>
+                    <table style={tableStyle}>
+                      <thead>
+                        <tr>
+                          <th style={cellStyle}>#</th>
+                          <th style={cellStyle}>Title</th>
+                          <th style={cellStyle}>Username</th>
+                          <th style={cellStyle}>Created Date</th>
+                          <th style={cellStyle}>Status</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {!notesHistory ? (
+                          renderTableMessage('Loading notes history...', 6)
+                        ) : notesHistory.notes.length === 0 ? (
+                          renderTableMessage('No notes history found.', 6)
+                        ) : (
+                          notesHistory.notes.map((note, index) => (
+                            <tr key={index}>
+                              <td style={cellStyle}>{index + 1}</td>
+
+                              <td style={cellStyle} >
+                                <strong>{note.title || 'Untitled'}</strong>
+                              </td>
+
+                              <td style={cellStyle}>
+                                {note.username || 'Unknown'}
+                              </td>
+
+                              <td style={cellStyle}>
+                                {note.createdAt
+                                  ? new Date(note.createdAt).toLocaleString()
+                                  : '—'}
+                              </td>
+                              <td style={cellStyle}>
+                                <span
+                                  style={{
+                                    color: note.status === 'active' ? 'green' : 'red',
+                                    fontWeight: 'bold'
+                                  }}
+                                >
+                                  {note.status === 'active' ? 'Active' : 'Deleted'}
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </section>
+                  <section style={sectionStyle}>
+
+
+
+                    <table style={tableStyle}>
+                      <thead>
+                        <tr>
+                          <th style={cellStyle}>#</th>
+                          <th style={cellStyle}>Title</th>
+                          <th style={cellStyle}>Username</th>
+                          <th style={cellStyle}>Created Date</th>
+                          <th style={cellStyle}>Deleted Date</th>
+                          <th style={cellStyle}>Status</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {!history ? (
+                          renderTableMessage('Loading notes history...')
+                        ) : history.length === 0 ? (
+                          renderTableMessage('No notes history found.')
+                        ) : (
+                          history.map((note, index) => (
+                            <tr key={index}>
+                              <td style={cellStyle}>{index + 1}</td>
+
+                              <td style={cellStyle} >
+                                <strong>{note.title || 'Untitled'}</strong>
+                              </td>
+
+                              <td style={cellStyle}>
+                                {note.username || 'Unknown'}
+                              </td>
+
+                              <td style={cellStyle}>
+                                {note.createdAt
+                                  ? new Date(note.createdAt).toLocaleString()
+                                  : '—'}
+                              </td>
+
+                              <td style={cellStyle}>
+                                {note.deletedAt
+                                  ? new Date(note.deletedAt).toLocaleString()
+                                  : '—'}
+                              </td>
+
+                              <td style={cellStyle}>
+                                <span
+                                  style={{
+                                    color: note.status === 'active' ? 'green' : 'red',
+                                    fontWeight: 'bold'
+                                  }}
+                                >
+                                  {note.status === 'active' ? 'Active' : 'Deleted'}
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </section>
+                </div>
+              </div>
+            </div>
           </>
           )} {activeSection === 'emaildata' && (<EmailHistory />)}
           {activeSection === 'sendnote' && (<SendNotesHistory />)}

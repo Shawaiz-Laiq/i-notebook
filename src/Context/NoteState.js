@@ -3,66 +3,89 @@ import { useState } from "react";
 import NoteContext from "./noteContext";
 import { useRef } from "react";
 
+
 const NoteState = (props) => {
   const token = localStorage.getItem("auth-token");
   const host = "https://firest-backend.vercel.app";
   const notesInitial = []
   const [chechError, setchechError] = useState()
   const [chechresult, setchechresult] = useState()
+  const requestVersion = useRef(0);
 
   //fetch 
   const getNote = async () => {
+    const currentVersion = requestVersion.current;
+
     const response = await fetch(`${host}/api/notes/fetchnotes`, {
-      method: 'GET',
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         "auth-token": token
-      },
-
+      }
     });
-    const json = await response.json()
 
-    setchechError(json.error)
-    setchechresult(json.length)
-    setnotes(json)
+    const json = await response.json();
 
-  }
+    // Ignore old requests
+    if (currentVersion !== requestVersion.current) return;
+
+    setchechError(json.error);
+    setchechresult(json.length);
+    setnotes(json);
+  };
   //Add Note
   const [notes, setnotes] = useState(notesInitial)
 
   const addNote = async (title, description) => {
-    const response = await fetch(`${host}/api/notes/addnotes`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'auth-token': token
-      },
-      body: JSON.stringify({
-        title: title,
-        description: description
-      })
-    });
-    const json = await response.json();
-    setnotes(prevNotes => [json, ...prevNotes]);
+  requestVersion.current++;
 
+  const response = await fetch(`${host}/api/notes/addnotes`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "auth-token": token
+    },
+    body: JSON.stringify({ title, description })
+  });
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.error || "Note could not be added");
   }
+
+  requestVersion.current++;
+
+  setnotes(prevNotes => [json, ...prevNotes]);
+};
 
   // Delete
   const delet = async (id) => {
+  requestVersion.current++;
 
-    const newNotes = notes.filter((note) => { return (note._id !== id) })
-    setnotes(newNotes)
-
-    await fetch(`${host}/api/notes/deletenote/${id}`, {
-      method: 'DELETE',
+  const response = await fetch(
+    `${host}/api/notes/deletenote/${id}`,
+    {
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
-        'auth-token': token
-      },
-    });
+        "Content-Type": "application/json",
+        "auth-token": token
+      }
+    }
+  );
 
+  const json = await response.json();
 
+  if (!response.ok) {
+    throw new Error(json.error || "Note could not be deleted");
   }
+
+  requestVersion.current++;
+
+  setnotes(prevNotes =>
+    prevNotes.filter(note => note._id !== id)
+  );
+};
 
   // Edit mote
   const edit = async (id, title, description) => {
