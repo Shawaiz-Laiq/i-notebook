@@ -33,11 +33,25 @@ function Signup() {
   }
 
   const onChange = (e) => {
-    setCredentials({
-      ...credentials,
-      [e.target.name]: e.target.value
-    });
-  };
+  let value = e.target.value;
+
+  if (e.target.name === "name") {
+    // Spaces ko underscore mein convert karo
+    value = value.replace(/\s+/g, "_");
+
+    // Maximum 12 characters
+    value = value.slice(0, 12);
+  }
+
+  setCredentials({
+    ...credentials,
+    [e.target.name]: value
+  });
+
+  if (e.target.name === "name") {
+    setInvalName(false);
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -241,17 +255,22 @@ function Signup() {
                   Full Name
                 </label>
                 <input
-                  id="signup-name"
-                  name="name"
-                  type="text"
-                  placeholder="Enter your name"
-                  value={credentials.name}
-                  onChange={onChange}
-                  autoComplete="name"
-                  required
-                  minLength={2}
-                  style={inputStyle}
-                />
+  id="signup-name"
+  name="name"
+  type="text"
+  placeholder="Enter your name"
+  value={credentials.name}
+  onChange={onChange}
+  autoComplete="name"
+  required
+  minLength={3}
+  maxLength={12}
+  style={inputStyle}
+/>
+
+<small style={{ color: "#777" }}>
+  Maximum 12 characters ({credentials.name.length}/12)
+</small>
                 {InvalName === true && <span style={{
                   fontSize: ".7rem",
                   color: "red"

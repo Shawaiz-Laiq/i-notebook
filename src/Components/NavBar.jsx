@@ -70,7 +70,7 @@ function NavBar() {
             Account
           </Link>
         </li>
-        <li className="nav-item">
+        {/* <li className="nav-item">
           <Link
             className={`nav-link ${location.pathname === "/received" ? "active" : ""}`}
             to="/received"
@@ -85,7 +85,16 @@ function NavBar() {
           >
             Sent Notes
           </Link>
+        </li> */}
+         <li className="nav-item">
+          <Link
+            className={`nav-link ${location.pathname === "/notechat" ? "active" : ""}`}
+            to="/notechat"
+          >
+            Notes Chat
+          </Link>
         </li>
+        
 
         <li className="nav-item">
           <div style={{ fontWeight: "500", margin: "8px" }}>

@@ -12,6 +12,7 @@ import ForgotPassword from "./Components/ForgotPassword";
 import NoteReceive from "./Components/NoteReceive";
 import ResetPassword from "./Components/ResetPassword";
 import NoteSendHistory from "./Components/NoteSendHistory";
+import NoteChat from "./Components/NoteChat";
 import {
   BrowserRouter as Router,
   Routes,
@@ -41,6 +42,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/received" element={<><NavBar /><NoteReceive /></>} />
           <Route path="/sentnotes" element={<><NavBar /><NoteSendHistory /> <Footer /> </>} />
+          <Route path="/notechat" element={<><NavBar /><NoteChat /> </>} />
         </Routes>
 
       </Router>

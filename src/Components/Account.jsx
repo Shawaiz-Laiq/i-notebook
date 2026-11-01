@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 import Footer from "./footer";
 
@@ -12,6 +12,11 @@ function Account() {
     const [emaila, setemaila] = useState('')
     const [date, setdate] = useState('')
     const [check, setcheck] = useState(false)
+    const [showEditName, setShowEditName] = useState(false);
+const [newName, setNewName] = useState("");
+const [nameLoading, setNameLoading] = useState(false);
+const [nameMessage, setNameMessage] = useState("");
+const [suggestions, setSuggestions] = useState([]);
 
     const [accountLoading, setAccountLoading] = useState(true);
 
@@ -75,6 +80,63 @@ function Account() {
         return `${date} At ${hours}:${minutes}`;
     }
     const incomingData = date
+    
+const saveUsername = async () => {
+    // Spaces ko underscore mein convert karo
+    const trimmedName = newName.trim().replace(/\s+/g, "_");
+
+    if (trimmedName.length < 3 || trimmedName.length > 12) {
+        setNameMessage("Username must be between 3 and 12 characters.");
+        return;
+    }
+
+    try {
+        setNameLoading(true);
+        setNameMessage("");
+        setSuggestions([]);
+
+        const token = localStorage.getItem("auth-token");
+
+        const response = await fetch(
+            "https://firest-backend.vercel.app/api/auth/update-name",
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": token
+                },
+                body: JSON.stringify({ name: trimmedName })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            setNameMessage(
+                data.message || data.errors || "Username update failed."
+            );
+            setSuggestions(data.suggestions || []);
+            return;
+        }
+
+        setname(data.name);
+        setNewName(data.name);
+        setNameMessage("Username updated successfully!");
+        setSuggestions([]);
+
+        setTimeout(() => {
+            setShowEditName(false);
+            setNameMessage("");
+        }, 1200);
+
+    } catch (error) {
+        console.error("Username update error:", error);
+        setNameMessage("Something went wrong. Please try again.");
+    } finally {
+        setNameLoading(false);
+    }
+};
+
 
     return (
         <>
@@ -128,9 +190,17 @@ function Account() {
                         <div style={cardStyle}>
                             <label>Username</label>
                             <h3 style={{ fontSize: "20px" }}>{name}</h3>
-                            <button style={buttonStyle}>
-                                ✏️ Edit Username
-                            </button>
+                            <button
+    style={buttonStyle}
+    onClick={() => {
+        setNewName(name);
+        setNameMessage("");
+        setSuggestions([]);
+        setShowEditName(true);
+    }}
+>
+    ✏️ Edit Username
+</button>
                         </div>
 
                         <div style={cardStyle}>
@@ -150,6 +220,16 @@ function Account() {
                             <h3 style={{ fontSize: "20px" }}>{formatMyDate(incomingData)}</h3>
                             <small>📅 Member since joining</small>
                         </div>
+                        <div style={cardStyle}>
+                            <label >See Your Sent Notes</label>
+                          <h3>
+                            <Link to="/sentnotes">Click Here to See</Link></h3>
+                        </div>
+                        <div style={cardStyle}>
+                            <label >See Your Received Notes</label>
+                          <h3>
+                            <Link to="/received">Click Here to See</Link></h3>
+                        </div>
                     </div>
 
                     <div style={{
@@ -159,6 +239,152 @@ function Account() {
                         background: "#f5f0ff",
                         textAlign: "center"
                     }}>
+                        {showEditName && (
+    <div style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(20, 10, 40, 0.65)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 9999,
+        padding: "15px"
+    }}>
+        <div style={{
+            width: "100%",
+            maxWidth: "430px",
+            background: "white",
+            padding: "25px",
+            borderRadius: "20px",
+            boxShadow: "0 15px 50px #0003"
+        }}>
+            <h2 style={{ color: "#6d28d9", marginTop: 0 }}>
+                ✏️ Change Username
+            </h2>
+
+            <p style={{ color: "#777" }}>
+                Enter your new username. It must be unique.
+            </p>
+
+            
+<input
+    type="text"
+    value={newName}
+    onChange={(e) => {
+        const value = e.target.value
+            .replace(/\s+/g, "_")
+            .slice(0, 12);
+
+        setNewName(value);
+        setNameMessage("");
+        setSuggestions([]);
+    }}
+    maxLength={12}
+    placeholder="Enter new username"
+    style={{
+        width: "100%",
+        boxSizing: "border-box",
+        padding: "13px",
+        border: "1px solid #c4b5fd",
+        borderRadius: "10px",
+        fontSize: "16px",
+        outline: "none"
+    }}
+/>
+
+
+            <small style={{ color: "#777" }}>
+    Minimum 3 and maximum 12 characters. Spaces are replaced with _.
+    ({newName.length}/12)
+</small>
+
+            {nameMessage && (
+                <p style={{
+                    color: nameMessage.includes("successfully")
+                        ? "green"
+                        : "red",
+                    marginTop: "12px"
+                }}>
+                    {nameMessage}
+                </p>
+            )}
+
+            {suggestions.length > 0 && (
+                <div style={{ marginTop: "15px" }}>
+                    <strong style={{ color: "#6d28d9" }}>
+                        Available username suggestions:
+                    </strong>
+
+                    <div style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "8px",
+                        marginTop: "10px"
+                    }}>
+                        {suggestions.map((suggestion) => (
+                            <button
+                                key={suggestion}
+                                onClick={() => {
+                                    setNewName(suggestion);
+                                    setNameMessage("");
+                                    setSuggestions([]);
+                                }}
+                                style={{
+                                    padding: "8px 12px",
+                                    border: "1px solid #c4b5fd",
+                                    borderRadius: "8px",
+                                    background: "#f5f0ff",
+                                    color: "#6d28d9",
+                                    cursor: "pointer"
+                                }}
+                            >
+                                {suggestion}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <div style={{
+                display: "flex",
+                gap: "10px",
+                marginTop: "22px"
+            }}>
+                <button
+                    onClick={saveUsername}
+                    disabled={nameLoading}
+                    style={{
+                        flex: 1,
+                        padding: "12px",
+                        border: "none",
+                        borderRadius: "10px",
+                        background: "#6d28d9",
+                        color: "white",
+                        fontWeight: "bold",
+                        cursor: nameLoading ? "not-allowed" : "pointer"
+                    }}
+                >
+                    {nameLoading ? "Saving..." : "Save Username"}
+                </button>
+
+                <button
+                    onClick={() => setShowEditName(false)}
+                    disabled={nameLoading}
+                    style={{
+                        padding: "12px 18px",
+                        border: "none",
+                        borderRadius: "10px",
+                        background: "#eee",
+                        color: "#333",
+                        cursor: "pointer"
+                    }}
+                >
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+)}
                         <div style={{ fontSize: "30px" }}>👑</div>
                         <h3 style={{ margin: "8px" }}>VIP Status</h3>
                         <p style={{ marginBottom: 0 }}>
@@ -257,7 +483,7 @@ function Account() {
 
 
             </div>)}
-            <Footer />
+            <Footer/>
         </>
     );
 }

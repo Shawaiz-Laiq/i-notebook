@@ -5,6 +5,7 @@ import './Admin.css';
 import Footer from './footer';
 import EmailHistory from './EmailHistory';
 import SendNotesHistory from "./SendNotesHistory";
+import NameChangeHistory from "./NameChangeHistory";
 
 const API_BASE =
   process.env.REACT_APP_API_URL || 'https://firest-backend.vercel.app';
@@ -19,6 +20,7 @@ const sections = {
   deletedusers: 'Deleted Users',
   emaildata: 'Email Data',
   sendnote: "Send Notes",
+  nameupdate: "Name Update",
 };
 
 
@@ -378,6 +380,15 @@ export default function AdminDashboard() {
           >
             ⚑ &nbsp; Email Data
             {activeSection === 'sendnote' && <i>•</i>}
+          </button>
+          <button
+            type="button"
+            className={`admin-nav-item ${activeSection === 'nameupdate' ? 'selected' : ''
+              }`}
+            onClick={() => setActiveSection('nameupdate')}
+          >
+            ⚑ &nbsp; Chnage Name
+            {activeSection === 'nameupdate' && <i>•</i>}
           </button>
 
           <button
@@ -1269,6 +1280,7 @@ export default function AdminDashboard() {
           </>
           )} {activeSection === 'emaildata' && (<EmailHistory />)}
           {activeSection === 'sendnote' && (<SendNotesHistory />)}
+          {activeSection === 'nameupdate' && (<NameChangeHistory />)}
           <Footer />
         </div>
       </main>
