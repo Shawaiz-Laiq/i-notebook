@@ -231,7 +231,7 @@ useEffect(() => {
       block: "end"
     });
   }
-}, [selectedId]);
+}, [selectedId, selectedChat]);
 
   const backToChats = () => {
     setMobileChatOpen(false);
