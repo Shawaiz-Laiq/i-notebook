@@ -327,7 +327,6 @@ useEffect(() => {
 
   const currentCount = selectedChat.messages.length;
 
-  // Only scroll when conversation opens or a new message arrives
   if (
     selectedId &&
     currentCount > previousMessageCount.current
@@ -340,7 +339,7 @@ useEffect(() => {
 
   previousMessageCount.current = currentCount;
 
-}, [selectedId, selectedChat?.messages.length]);
+}, [selectedId, selectedChat]);
 
   const backToChats = () => {
     setMobileChatOpen(false);
