@@ -22,6 +22,7 @@ export default function NoteChat() {
 
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
+  const previousMessageCount = useRef(0);
 
   const getToken = () => localStorage.getItem("auth-token");
 
@@ -319,13 +320,27 @@ console.log("Sending Message:", message);
 
 
 useEffect(() => {
-  if (selectedChat && selectedChat.messages.length > 0) {
+  if (!selectedChat) {
+    previousMessageCount.current = 0;
+    return;
+  }
+
+  const currentCount = selectedChat.messages.length;
+
+  // Only scroll when conversation opens or a new message arrives
+  if (
+    selectedId &&
+    currentCount > previousMessageCount.current
+  ) {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "end"
     });
   }
-}, [selectedId, selectedChat]);
+
+  previousMessageCount.current = currentCount;
+
+}, [selectedId, selectedChat?.messages.length]);
 
   const backToChats = () => {
     setMobileChatOpen(false);
