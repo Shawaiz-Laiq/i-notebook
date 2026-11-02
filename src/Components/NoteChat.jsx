@@ -223,12 +223,14 @@ console.log("Sending Message:", message);
 
   // Initial load and auto refresh
   useEffect(() => {
+  loadChats();
+
+  const interval = setInterval(() => {
     loadChats();
+  }, 3000);
 
-    const interval = setInterval(loadChats, 60000);
-
-    return () => clearInterval(interval);
-  }, [loadChats]);
+  return () => clearInterval(interval);
+}, [loadChats]);
 
   // Selected conversation
   const selectedChat = chats.find(
@@ -314,14 +316,16 @@ console.log("Sending Message:", message);
     }
   };
 
-  useEffect(() => {
-    if (selectedChat && selectedChat.messages.length > 0) {
-      messagesEndRef.current?.scrollIntoView({
-        behavior: "auto",
-        block: "end"
-      });
-    }
-  }, [selectedId, selectedChat]);
+
+
+useEffect(() => {
+  if (selectedChat && selectedChat.messages.length > 0) {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end"
+    });
+  }
+}, [selectedId, selectedChat]);
 
   const backToChats = () => {
     setMobileChatOpen(false);
