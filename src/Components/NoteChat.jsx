@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 import Footer from "./footer";
 import ChatSendNote from "./ChatSendNote";
+import ChatTextMessage from "./ChatTextMessage";
 
 const API = "https://firest-backend.vercel.app";
 
@@ -14,6 +15,10 @@ export default function NoteChat() {
   const [mobileChatOpen, setMobileChatOpen] = useState(false);
   const [error, setError] = useState("");
   const [showSendNote, setShowSendNote] = useState(false);
+
+
+  const [messageText, setMessageText] = useState("");
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
@@ -37,19 +42,24 @@ export default function NoteChat() {
     }
 
     try {
-      const [sentRes, receivedRes] = await Promise.all([
+      const [sentRes, receivedRes, messagesRes] = await Promise.all([
         fetch(`${API}/api/sendnotes/sent`, {
           headers: { "auth-token": token }
         }),
 
         fetch(`${API}/api/sendnotes/received`, {
           headers: { "auth-token": token }
+        }),
+
+        fetch(`${API}/api/sendnotes/messages`, {
+          headers: { "auth-token": token }
         })
       ]);
 
-      const [sentData, receivedData] = await Promise.all([
+      const [sentData, receivedData, messagesData] = await Promise.all([
         sentRes.json(),
-        receivedRes.json()
+        receivedRes.json(),
+        messagesRes.json()
       ]);
 
       if (!sentRes.ok || !sentData.success) {
@@ -60,21 +70,21 @@ export default function NoteChat() {
         throw new Error(receivedData.message || "Could not load received notes");
       }
 
+      if (!messagesRes.ok || !messagesData.success) {
+        throw new Error(messagesData.message || "Could not load text messages");
+      }
+
       const chatMap = {};
 
-      // OUTGOING MESSAGES
+      // OUTGOING NOTES
       (sentData.notes || []).forEach(note => {
         const partnerId = getId(note.receiver);
-
         if (!partnerId) return;
 
         if (!chatMap[partnerId]) {
           chatMap[partnerId] = {
             partnerId,
-            partnerName:
-              note.receiverName ||
-              note.receiver?.name ||
-              "Unknown User",
+            partnerName: note.receiverName || note.receiver?.name || "Unknown User",
             messages: []
           };
         }
@@ -82,40 +92,63 @@ export default function NoteChat() {
         chatMap[partnerId].messages.push({
           ...note,
           direction: "outgoing",
+          messageType: "note",
           messageTime: note.sentAt
         });
       });
 
-      // INCOMING MESSAGES
+      // INCOMING NOTES
       (receivedData.notes || []).forEach(note => {
         const partnerId = getId(note.sender);
+        if (!partnerId) return;
+
+        if (!chatMap[partnerId]) {
+          chatMap[partnerId] = {
+            partnerId,
+            partnerName: note.senderName || note.sender?.name || "Unknown User",
+            messages: []
+          };
+        }
+
+        chatMap[partnerId].messages.push({
+          ...note,
+          direction: "incoming",
+          messageType: "note",
+          messageTime: note.sentAt
+        });
+      });
+
+      // TEXT MESSAGES: SENT AND RECEIVED
+      (messagesData.messages || []).forEach(msg => {
+        const outgoing = msg.direction === "outgoing";
+
+        const partnerId = outgoing
+          ? getId(msg.receiver)
+          : getId(msg.sender);
 
         if (!partnerId) return;
 
         if (!chatMap[partnerId]) {
           chatMap[partnerId] = {
             partnerId,
-            partnerName:
-              note.senderName ||
-              note.sender?.name ||
-              "Unknown User",
+            partnerName: outgoing
+              ? msg.receiverName || "Unknown User"
+              : msg.senderName || "Unknown User",
             messages: []
           };
         }
 
-        // Prefer an existing name if available
-        if (note.senderName) {
-          chatMap[partnerId].partnerName = note.senderName;
-        }
-
         chatMap[partnerId].messages.push({
-          ...note,
-          direction: "incoming",
-          messageTime: note.sentAt
+          ...msg,
+          direction: msg.direction,
+          messageType: "text",
+          title: "Text Message",
+          description: msg.message,
+          messageTime: msg.sentAt
         });
       });
 
-      // Sort all messages in chronological order
+      // SORT MESSAGES
       const combinedChats = Object.values(chatMap).map(chat => ({
         ...chat,
         messages: chat.messages.sort(
@@ -124,7 +157,7 @@ export default function NoteChat() {
         )
       }));
 
-      // Sort chats by latest message
+      // SORT CONVERSATIONS BY LATEST MESSAGE
       combinedChats.sort((a, b) => {
         const lastA = a.messages[a.messages.length - 1];
         const lastB = b.messages[b.messages.length - 1];
@@ -141,6 +174,52 @@ export default function NoteChat() {
       setLoading(false);
     }
   }, [navigate]);
+  const sendTextMessage = async () => {
+    const message = messageText.trim();
+
+    if (!message) {
+      setError("Please type a message first.");
+      return;
+    }
+
+    if (!selectedChat?.partnerId) {
+      setError("Please select a conversation first.");
+      return;
+    }
+
+    try {
+      setSendingMessage(true);
+      setError("");
+console.log("Selected Receiver ID:", selectedChat?.partnerId);
+console.log("Selected Receiver Name:", selectedChat?.partnerName);
+console.log("Sending Message:", message);
+      const response = await fetch(`${API}/api/sendnotes/message`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": getToken()
+        },
+        body: JSON.stringify({
+          receiverId: selectedChat.partnerId,
+          message: message
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Message could not be sent.");
+      }
+
+      setMessageText("");
+      await loadChats();
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSendingMessage(false);
+    }
+  };
 
   // Initial load and auto refresh
   useEffect(() => {
@@ -188,33 +267,44 @@ export default function NoteChat() {
     if (!unread) return;
 
     try {
-      const response = await fetch(
-        `${API}/api/sendnotes/read/${chat.partnerId}`,
-        {
+      const token = getToken();
+
+      const [noteResponse, messageResponse] = await Promise.all([
+        fetch(`${API}/api/sendnotes/read/${chat.partnerId}`, {
           method: "POST",
-          headers: {
-            "auth-token": getToken()
-          }
-        }
-      );
+          headers: { "auth-token": token }
+        }),
 
-      const data = await response.json();
+        fetch(`${API}/api/sendnotes/message/read/${chat.partnerId}`, {
+          method: "POST",
+          headers: { "auth-token": token }
+        })
+      ]);
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Could not mark messages as read");
+      const [noteData, messageData] = await Promise.all([
+        noteResponse.json(),
+        messageResponse.json()
+      ]);
+
+      if (!noteResponse.ok || !noteData.success) {
+        throw new Error(noteData.message || "Could not mark notes as read");
+      }
+
+      if (!messageResponse.ok || !messageData.success) {
+        throw new Error(messageData.message || "Could not mark messages as read");
       }
 
       setChats(prev =>
         prev.map(item =>
           item.partnerId === chat.partnerId
             ? {
-                ...item,
-                messages: item.messages.map(msg =>
-                  msg.direction === "incoming"
-                    ? { ...msg, isRead: true }
-                    : msg
-                )
-              }
+              ...item,
+              messages: item.messages.map(msg =>
+                msg.direction === "incoming"
+                  ? { ...msg, isRead: true }
+                  : msg
+              )
+            }
             : item
         )
       );
@@ -224,14 +314,14 @@ export default function NoteChat() {
     }
   };
 
-useEffect(() => {
-  if (selectedChat && selectedChat.messages.length > 0) {
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "instant",
-      block: "end"
-    });
-  }
-}, [selectedId, selectedChat]);
+  useEffect(() => {
+    if (selectedChat && selectedChat.messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({
+        behavior: "auto",
+        block: "end"
+      });
+    }
+  }, [selectedId, selectedChat]);
 
   const backToChats = () => {
     setMobileChatOpen(false);
@@ -386,6 +476,53 @@ useEffect(() => {
 .unified-list::-webkit-scrollbar {
   display: none;
 }
+  .chat-message-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.chat-message-input input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  outline: none;
+  font-size: 14px;
+}
+
+.chat-message-input input:focus {
+  border-color: #2563eb;
+}
+
+.chat-message-input button {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chat-message-input button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media(max-width: 480px) {
+  .chat-message-input {
+    min-width: 100%;
+  }
+
+  .chat-message-input button {
+    padding: 12px;
+  }
+}
 
         @media(max-width:650px) {
           .unified-chat {
@@ -428,6 +565,7 @@ useEffect(() => {
           .unified-bubble {
             max-width: 88%;
           }
+            
         }
       `}</style>
 
@@ -609,13 +747,11 @@ useEffect(() => {
                   return (
                     <div
                       key={`${msg.direction}-${msg._id}`}
-                      className={`unified-message ${
-                        outgoing ? "outgoing" : "incoming"
-                      }`}
+                      className={`unified-message ${outgoing ? "outgoing" : "incoming"
+                        }`}
                     >
-                      <div className={`unified-bubble ${
-                        outgoing ? "outgoing" : "incoming"
-                      }`}>
+                      <div className={`unified-bubble ${outgoing ? "outgoing" : "incoming"
+                        }`}>
 
                         <p style={{
                           margin: "0 0 5px",
@@ -662,35 +798,60 @@ useEffect(() => {
 
               </div>
               <div style={{
-  padding: "12px",
-  background: "#f0f2f5",
-  borderTop: "1px solid #ddd",
-  textAlign: "center"
-}}>
-  <button
-    onClick={() => setShowSendNote(true)}
-    style={{
-      background: "#2563eb",
-      color: "white",
-      border: "none",
-      padding: "11px 22px",
-      borderRadius: "10px",
-      cursor: "pointer",
-      fontWeight: 600
-    }}
-  >
-    + Send Your Notes
-  </button>
-</div>
+                padding: "12px",
+                background: "#f0f2f5",
+                borderTop: "1px solid #ddd",
+                display: "flex",
+                justifyContent: "center",
+                gap: "10px",
+                flexWrap: "wrap"
+              }}>
+                <button
+                  onClick={() => setShowSendNote(true)}
+                  style={{
+                    background: "#2563eb",
+                    color: "white",
+                    border: "none",
+                    padding: "11px 22px",
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    fontWeight: 600
+                  }}
+                >
+                  + Send Your Notes
+                </button>
 
-{showSendNote && (
-  <ChatSendNote
-    recipientId={selectedChat.partnerId}
-    recipientName={selectedChat.partnerName}
-    onClose={() => setShowSendNote(false)}
-    onSent={() => loadChats()}
-  />
-)}
+                <div className="chat-message-input">
+                  <input
+                    type="text"
+                    placeholder="Type your message..."
+                    value={messageText}
+                    onChange={(e) => setMessageText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        sendTextMessage();
+                      }
+                    }}
+                    disabled={sendingMessage}
+                  />
+
+                  <button
+                    onClick={sendTextMessage}
+                    disabled={sendingMessage || !messageText.trim()}
+                  >
+                    {sendingMessage ? "Sending..." : "Send Message"}
+                  </button>
+                </div>
+              </div>
+
+              {showSendNote && (
+                <ChatSendNote
+                  recipientId={selectedChat.partnerId}
+                  recipientName={selectedChat.partnerName}
+                  onClose={() => setShowSendNote(false)}
+                  onSent={() => loadChats()}
+                />
+              )}
             </>
           )}
         </div>

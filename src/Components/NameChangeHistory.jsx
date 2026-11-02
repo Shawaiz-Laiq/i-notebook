@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./EmailHistory.css";
 
 const API_URL =
-  "http://localhost:5000/api/auth/admin/name-change-history";
+  "https://firest-backend.vercel.app/api/auth/admin/name-change-history";
 
 const formatDate = (date) => {
   if (!date) return "—";

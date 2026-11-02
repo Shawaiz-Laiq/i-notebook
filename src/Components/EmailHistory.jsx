@@ -52,6 +52,8 @@ export default function EmailHistory() {
   const [search, setSearch] = useState("");
   const [notesSlide, setNotesSlide] = useState(0);
 
+
+
   const loadEmailHistory = useCallback(async (requestedPage = page) => {
     setLoading(true);
     setError("");
@@ -93,9 +95,7 @@ export default function EmailHistory() {
     }
   }, [page]);
 
-  useEffect(() => {
-    loadEmailHistory(page);
-  }, [page, loadEmailHistory]);
+  
   const emails = useMemo(() => data?.emails ?? [], [data]);
   const summary = useMemo(() => data?.summary ?? [], [data]);
 
@@ -150,8 +150,18 @@ export default function EmailHistory() {
       return matchesStatus && matchesType && matchesSearch;
     });
   }, [emails, search, statusFilter, typeFilter]);
+  
+
+
+useEffect(() => {
+  loadEmailHistory(page);
+}, [page, loadEmailHistory]);
+
 
   const totalPages = data?.totalPages ?? 1;
+  
+
+
 
   return (
     <>
@@ -477,6 +487,7 @@ export default function EmailHistory() {
           </div>
         </div>
       </div>
+  
     </>
   );
 }

@@ -13,6 +13,7 @@ import NoteReceive from "./Components/NoteReceive";
 import ResetPassword from "./Components/ResetPassword";
 import NoteSendHistory from "./Components/NoteSendHistory";
 import NoteChat from "./Components/NoteChat";
+import SessionWatcher from './Components/SessionWatcher';
 import {
   BrowserRouter as Router,
   Routes,
@@ -29,6 +30,7 @@ function App() {
   return (
     <NoteState>
       <Router>
+         <SessionWatcher />
         <Routes>
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />

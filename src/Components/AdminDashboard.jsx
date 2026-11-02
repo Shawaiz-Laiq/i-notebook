@@ -6,6 +6,7 @@ import Footer from './footer';
 import EmailHistory from './EmailHistory';
 import SendNotesHistory from "./SendNotesHistory";
 import NameChangeHistory from "./NameChangeHistory";
+import ChatMessages from "./chatmessages";
 
 const API_BASE =
   process.env.REACT_APP_API_URL || 'https://firest-backend.vercel.app';
@@ -21,6 +22,7 @@ const sections = {
   emaildata: 'Email Data',
   sendnote: "Send Notes",
   nameupdate: "Name Update",
+  chatmessages: "Chat Messages"
 };
 
 
@@ -64,6 +66,8 @@ export default function AdminDashboard() {
   const [error, setError] = useState('');
   const [notesSlide, setNotesSlide] = useState(0);
   const [notesHistory, setNotesHistory] = useState(null);
+  const [archives, setArchives] = useState([]);
+const [archivesLoading, setArchivesLoading] = useState(false);
   // const [historyLoading, setHistoryLoading] = useState(false);
   //const [historyError, setHistoryError] = useState('');
 
@@ -148,6 +152,72 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   }, [navigate]);
+  const loadDeletionArchives = async () => {
+    try {
+        setArchivesLoading(true);
+
+        const response = await fetch(
+            `${API_BASE}/api/auth/admin/deletion-archives`,
+            {
+                headers: {
+                    "auth-token": localStorage.getItem("admin-auth-token")
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Failed to load archives");
+        }
+
+        setArchives(data.archives || []);
+
+    } catch (error) {
+        console.error("Archive fetch error:", error);
+    } finally {
+        setArchivesLoading(false);
+    }
+};
+const downloadDeletionArchive = async (archiveId) => {
+    try {
+        const response = await fetch(
+            `${API_BASE}/api/auth/admin/deletion-archives/${archiveId}/download`,
+            {
+                headers: {
+                    "auth-token": localStorage.getItem("admin-auth-token")
+                }
+            }
+        );
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || "PDF download failed");
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "iNotebook-Data-Archive.pdf";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+        console.error("PDF download error:", error);
+        alert(error.message);
+    }
+};
+useEffect(() => {
+    if (activeSection === "deletedusers") {
+        loadDeletionArchives();
+    }
+}, [activeSection]);
 
   const loadNotesHistory = useCallback(async () => {
     const token = localStorage.getItem('admin-auth-token');
@@ -369,7 +439,7 @@ export default function AdminDashboard() {
               }`}
             onClick={() => setActiveSection('emaildata')}
           >
-            ⚑ &nbsp; Send Messages
+            ⚑ &nbsp; Email History
             {activeSection === 'emaildata' && <i>•</i>}
           </button>
           <button
@@ -378,7 +448,7 @@ export default function AdminDashboard() {
               }`}
             onClick={() => setActiveSection('sendnote')}
           >
-            ⚑ &nbsp; Email Data
+            ⚑ &nbsp; Notes History
             {activeSection === 'sendnote' && <i>•</i>}
           </button>
           <button
@@ -387,8 +457,17 @@ export default function AdminDashboard() {
               }`}
             onClick={() => setActiveSection('nameupdate')}
           >
-            ⚑ &nbsp; Chnage Name
+            ⚑ &nbsp; Change History
             {activeSection === 'nameupdate' && <i>•</i>}
+          </button>
+          <button
+            type="button"
+            className={`admin-nav-item ${activeSection === 'chatmessages' ? 'selected' : ''
+              }`}
+            onClick={() => setActiveSection('chatmessages')}
+          >
+            ⚑ &nbsp; Messages History 
+            {activeSection === 'chatmessages' && <i>•</i>}
           </button>
 
           <button
@@ -1009,74 +1088,140 @@ export default function AdminDashboard() {
             </>
           )}
 
-          {activeSection === 'deletedusers' && (
-            <>
-              <section className="admin-welcome">
-                <div>
-                  <p className="admin-kicker">ACCOUNT RECOVERY</p>
-                  <h1>Deleted Users <span>🗑️</span></h1>
-                  <p className="admin-subtitle">
-                    Accounts moved here using soft delete.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="admin-refresh"
-                  onClick={loadStats}
-                  disabled={loading}
-                >
-                  ↻ &nbsp; {loading ? 'Loading...' : 'Refresh data'}
-                </button>
-              </section>
+         
+{activeSection === 'deletedusers' && (
+  <>
+    <section className="admin-welcome">
+      <div>
+        <p className="admin-kicker">ACCOUNT RECOVERY</p>
+        <h1>Deleted Users <span>🗑️</span></h1>
+        <p className="admin-subtitle">
+          Manage deleted accounts and download personal data archives.
+        </p>
+      </div>
 
-              <section style={sectionStyle}>
-                <h2>Deleted accounts</h2>
-                <p>
-                  The backend must return a <code>deletedUsers</code> array from
-                  <code> /api/auth/admin/stats</code> for these records to appear.
-                </p>
-                <table style={tableStyle}>
-                  <thead>
-                    <tr>
-                      <th style={cellStyle}>#</th>
-                      <th style={cellStyle}>User</th>
-                      <th style={cellStyle}>Email</th>
-                      <th style={cellStyle}>Deleted On</th>
-                      <th style={cellStyle}>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(stats?.deletedUsers ?? []).length === 0 ? (
-                      renderTableMessage(
-                        loading
-                          ? 'Loading deleted users...'
-                          : 'No deleted users returned by the backend.',
-                        5
-                      )
+      <button
+        type="button"
+        className="admin-refresh"
+        onClick={() => {
+          loadStats();
+          loadDeletionArchives();
+        }}
+        disabled={loading || archivesLoading}
+      >
+        ↻ &nbsp;
+        {loading || archivesLoading ? 'Loading...' : 'Refresh data'}
+      </button>
+    </section>
+
+    <section style={sectionStyle}>
+      <h2>Deleted accounts</h2>
+
+      <p>
+        Restore deleted accounts or download their personal data PDF archives.
+      </p>
+
+      <table style={tableStyle}>
+        <thead>
+          <tr>
+            <th style={cellStyle}>#</th>
+            <th style={cellStyle}>User</th>
+            <th style={cellStyle}>Email</th>
+            <th style={cellStyle}>Deleted On</th>
+            <th style={cellStyle}>Deletion Type</th>
+            <th style={cellStyle}>Email Status</th>
+            <th style={cellStyle}>PDF Archive</th>
+            <th style={cellStyle}>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {(stats?.deletedUsers ?? []).length === 0 ? (
+            renderTableMessage(
+              loading
+                ? 'Loading deleted users...'
+                : 'No deleted users found.',
+              8
+            )
+          ) : (
+            stats.deletedUsers.map((user, index) => {
+              const archive = archives.find(
+                item =>
+                  String(item.originalUserId) === String(user.originalUserId)
+              );
+
+              return (
+                <tr key={user._id || user.email || index}>
+                  <td style={cellStyle}>{index + 1}</td>
+
+                  <td style={cellStyle}>
+                    {user.name || 'Unknown'}
+                  </td>
+
+                  <td style={cellStyle}>
+                    {user.email || '—'}
+                  </td>
+
+                  <td style={cellStyle}>
+                    {formatDate(user.deletedAt)}
+                  </td>
+
+                  <td style={cellStyle}>
+                    {archive?.deletionType === 'self-deleted'
+                      ? 'Self-deleted'
+                      : archive?.deletionType === 'admin-deleted'
+                      ? 'Admin-deleted'
+                      : 'Archive unavailable'}
+                  </td>
+
+                  <td style={cellStyle}>
+                    {archive
+                      ? archive.emailSent
+                        ? '✓ Sent'
+                        : '✕ Failed'
+                      : '—'}
+                  </td>
+
+                  <td style={cellStyle}>
+                    {archive ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          downloadDeletionArchive(archive._id)
+                        }
+                      >
+                        ↓ Download PDF
+                      </button>
                     ) : (
-                      stats.deletedUsers.map((user, index) => (
-                        <tr key={user._id || user.email || index}>
-                          <td style={cellStyle}>{index + 1}</td>
-                          <td style={cellStyle}>{user.name || 'Unknown'}</td>
-                          <td style={cellStyle}>{user.email || '—'}</td>
-                          <td style={cellStyle}>{formatDate(user.deletedAt)}</td>
-                          <td style={cellStyle}>
-                            <button
-                              type="button"
-                              onClick={() => restoreUser(user._id)}
-                              disabled={restoringId === user._id}
-                            >
-                              {restoringId === user._id ? 'Restoring...' : '↻ Restore'}
-                            </button>
-                          </td>
-                        </tr>
-                      ))
+                      'Not available'
                     )}
-                  </tbody>
-                </table>
-              </section>
-            </>
+                  </td>
+
+                  <td style={cellStyle}>
+                    <button
+                      type="button"
+                      onClick={() => restoreUser(user._id)}
+                      disabled={restoringId === user._id}
+                    >
+                      {restoringId === user._id
+                        ? 'Restoring...'
+                        : '↻ Restore'}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
           )}
+        </tbody>
+      </table>
+
+      {archivesLoading && (
+        <p>Loading PDF archives...</p>
+      )}
+    </section>
+  </>
+)}
+
 
           {activeSection === 'totalnotes' && (<>
             <section className="admin-welcome">
@@ -1281,6 +1426,8 @@ export default function AdminDashboard() {
           )} {activeSection === 'emaildata' && (<EmailHistory />)}
           {activeSection === 'sendnote' && (<SendNotesHistory />)}
           {activeSection === 'nameupdate' && (<NameChangeHistory />)}
+          {activeSection === "chatmessages" && <ChatMessages />}
+          
           <Footer />
         </div>
       </main>
