@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 import Footer from "./footer";
 import ChatSendNote from "./ChatSendNote";
-import ChatTextMessage from "./ChatTextMessage";
+
 
 const API = "https://firest-backend.vercel.app";
 
