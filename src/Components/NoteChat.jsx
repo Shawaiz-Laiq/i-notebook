@@ -2,7 +2,6 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
-import Footer from "./footer";
 import ChatSendNote from "./ChatSendNote";
 
 
@@ -874,8 +873,6 @@ useEffect(() => {
           )}
         </div>
       </div>
-
-      <Footer />
     </>
   );
 }
